@@ -5,4 +5,5 @@ import java.rmi.RemoteException;
 
 public interface ServerInterface extends Remote {
     public void subscribeManager(String name, ManagerClientInterface managerClient) throws RemoteException;
+
 }

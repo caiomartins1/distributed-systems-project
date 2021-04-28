@@ -52,12 +52,12 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 System.out.println("Message to client: ");
                 s = lerString();
                 managerClient.printOnClient(s);
+                System.out.println(managerClient.getInput());
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
-
 
 
 }
