@@ -20,7 +20,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
         System.out.println("Message from the server: " + s);
     }
 
-    public String getInput() {
+    public static String readString() {
         String s = "";
 
         System.out.println();
@@ -35,7 +35,9 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
     }
 
 
+    // TODO: Manager Menu
     public static void main(String[] args) {
+        String option = "";
         System.setSecurityManager(new SecurityManager());
 
         try {
@@ -44,7 +46,52 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
             ManagerClient managerClient = new ManagerClient();
             server.subscribeManager("Manager Client 1", managerClient);
 
-            System.out.println("Connected");
+            System.out.println("----- Connected to server -----");
+
+            while (true) {
+                System.out.println(
+                        "----- Choose an action: -----\n" +
+                                "1. Register a product\n" +
+                                "2. Add a unit of existing product\n" +
+                                "3. Remove a product\n" +
+                                "4. List existing products\n" +
+                                "5. List sells\n" +
+                                "6. List buys\n" +
+                                "0. Exit\n" +
+                                "Your action: "
+                );
+
+                option = readString();
+
+                switch(option) {
+                    case "1":
+                        System.out.println("1");
+                        break;
+                    case "2":
+                        System.out.println("2");
+                        break;
+                    case "3":
+                        System.out.println("3");
+                        break;
+                    case "4":
+                        System.out.println("4");
+                        break;
+                    case "5":
+                        System.out.println("5");
+                        break;
+                    case "6":
+                        System.out.println("6");
+                        break;
+                    case "0":
+                        System.out.println("Exiting...");
+                        System.exit(0);
+                        break;
+                    default:
+                        System.out.println("Invalid Option");
+                        break;
+                }
+
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
