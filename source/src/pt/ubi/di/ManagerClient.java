@@ -2,6 +2,7 @@ package pt.ubi.di;
 
 import pt.ubi.di.interfaces.ManagerClientInterface;
 import pt.ubi.di.interfaces.ServerInterface;
+import pt.ubi.di.model.Part;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
     }
 
 
-    // TODO: Manager Menu
+    // TODO: case 1 -> add to file
     public static void main(String[] args) {
         String option = "";
         System.setSecurityManager(new SecurityManager());
@@ -43,8 +44,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
         try {
             LocateRegistry.createRegistry(1199);
             ServerInterface server = (ServerInterface) Naming.lookup("server");
-            ManagerClient managerClient = new ManagerClient();
-            server.subscribeManager("Manager Client 1", managerClient);
+            server.subscribeManager("Manager Client 1", new ManagerClient());
 
             System.out.println("----- Connected to server -----");
 
@@ -65,7 +65,8 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
 
                 switch(option) {
                     case "1":
-                        System.out.println("1");
+                        Part p = new Part("Wheel", 25.99f, 40.25f, 4);
+                        server.managerOption1(p);
                         break;
                     case "2":
                         System.out.println("2");
@@ -93,7 +94,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
 
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Manager Client -> " + e.getMessage());
         }
     }
 }
