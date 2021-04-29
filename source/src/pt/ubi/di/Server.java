@@ -65,9 +65,8 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
         switch (confirmation) {
             case "y":
-                parts.remove(itemToDelete - 1);
+                mService.deletePart(parts, itemToDelete - 1);
                 managerClient.printOnClient("Item removed with success");
-                FileUtils.saveParts(parts);
                 break;
             case "n":
                 managerClient.printOnClient("Action canceled");
