@@ -3,6 +3,7 @@ package pt.ubi.di;
 import pt.ubi.di.interfaces.ManagerClientInterface;
 import pt.ubi.di.interfaces.ServerInterface;
 import pt.ubi.di.model.Part;
+import pt.ubi.di.utils.ReadUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,22 +22,24 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
         System.out.println("Message from the server: " + s);
     }
 
-    public static String readString() {
-        String s = "";
+    private static Part generatePart() {
+        System.out.println("----- Adding a new Part -----");
 
-        System.out.println();
-        try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(System.in), 1);
-            s = in.readLine();
+        System.out.println("Enter Part type: ");
+        String type = ReadUtils.readString();
 
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        return s;
+        System.out.println("Enter Part buy price: ");
+        float buyPrice = ReadUtils.readFloat();
+
+        System.out.println("Enter Part sell price: ");
+        float sellPrice = ReadUtils.readFloat();
+
+        System.out.println("Enter Part minimum stock: ");
+        int minStock = ReadUtils.readInt();
+
+        return new Part(type, buyPrice, sellPrice, minStock);
     }
 
-
-    // TODO: case 1 -> add to file
     public static void main(String[] args) {
         String option = "";
         System.setSecurityManager(new SecurityManager());
@@ -61,12 +64,11 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
                                 "Your action: "
                 );
 
-                option = readString();
+                option = ReadUtils.readString();
 
                 switch(option) {
                     case "1":
-                        Part p = new Part("Wheel", 25.99f, 40.25f, 4);
-                        server.managerOption1(p);
+                        server.managerOption1(generatePart());
                         break;
                     case "2":
                         System.out.println("2");
