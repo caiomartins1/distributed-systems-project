@@ -4,10 +4,6 @@ import pt.ubi.di.interfaces.ManagerClientInterface;
 import pt.ubi.di.interfaces.ServerInterface;
 import pt.ubi.di.model.Part;
 import pt.ubi.di.utils.ReadUtils;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -40,6 +36,24 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
         return new Part(type, buyPrice, sellPrice, minStock);
     }
 
+    private static Part xd() {
+        System.out.println("----- Adding a new Part -----");
+
+        System.out.println("Enter Part type: ");
+        String type = ReadUtils.readString();
+
+        System.out.println("Enter Part buy price: ");
+        float buyPrice = ReadUtils.readFloat();
+
+        System.out.println("Enter Part sell price: ");
+        float sellPrice = ReadUtils.readFloat();
+
+        System.out.println("Enter Part minimum stock: ");
+        int minStock = ReadUtils.readInt();
+
+        return new Part(type, buyPrice, sellPrice, minStock);
+    }
+
     public static void main(String[] args) {
         String option = "";
         System.setSecurityManager(new SecurityManager());
@@ -55,7 +69,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
                 System.out.println(
                         "----- Choose an action: -----\n" +
                                 "1. Register a product\n" +
-                                "2. Add a unit of existing product\n" +
+                                "2. Add a unit of existing product\n" + // buying from supplier
                                 "3. Remove a product\n" +
                                 "4. List existing products\n" +
                                 "5. List sells\n" +
@@ -66,7 +80,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
 
                 option = ReadUtils.readString();
 
-                switch(option) {
+                switch (option) {
                     case "1":
                         server.managerOption1(generatePart());
                         break;
