@@ -34,6 +34,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         super();
         mService = new ManagerService();
         loadData();
+
     }
 
     public void subscribeManager(String name, ManagerClientInterface client) {
@@ -44,24 +45,12 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     public void managerOption1(Part p) throws RemoteException {
         mService.registerPart(parts, p);
         managerClient.printOnClient("\nPart " + p.getType() + " added with success");
-        System.out.println(parts.toString());
     }
 
     private void loadData() {
         parts = FileUtils.retrieveParts();
-    }
-
-    // Testing purposes
-    public static String lerString() {
-        String s = "";
-        try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(System.in), 1);
-            s = in.readLine();
-
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        return s;
+        System.out.println("Loading data...");
+        System.out.println(parts.toString());
     }
 
     public static void main(String[] args) {
