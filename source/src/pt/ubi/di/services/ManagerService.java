@@ -9,6 +9,6 @@ public class ManagerService {
 
     public void registerPart(ArrayList<Part> parts, Part p) {
         parts.add(p);
-        //        FileUtils.saveParts(parts);
+        FileUtils.saveParts(parts);
     }
 }
