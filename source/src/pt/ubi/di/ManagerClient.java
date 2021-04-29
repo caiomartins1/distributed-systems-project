@@ -15,7 +15,15 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
     }
 
     public void printOnClient(String s) throws RemoteException {
-        System.out.println("Message from the server: " + s);
+        System.out.println(s);
+    }
+
+    public String readStringClient() throws RemoteException{
+        return ReadUtils.readString();
+    }
+
+    public int readIntClient() throws RemoteException{
+        return ReadUtils.readInt();
     }
 
     private static Part generatePart() {
@@ -88,7 +96,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
                         server.managerOption2();
                         break;
                     case "3":
-                        System.out.println("3");
+                        server.managerOption3();
                         break;
                     case "4":
                         System.out.println("4");
@@ -100,6 +108,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
                         System.out.println("6");
                         break;
                     case "0":
+                        server.managerOption0();
                         System.out.println("Exiting...");
                         System.exit(0);
                         break;
