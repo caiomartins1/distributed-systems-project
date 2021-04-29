@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class FileUtils {
-    private static String partsFile = "/src/pt/ubi/di/db/parts.db";
+    private static String partsFile = "./db/parts.db";
 
     public static void saveParts(ArrayList<Part> parts) {
 
@@ -32,9 +32,9 @@ public class FileUtils {
 
             parts = (ArrayList<Part>) readStream.readObject();
             readStream.close();
-            System.out.println(parts.toString());
 
         } catch (Exception e) {
+            System.out.println("File Utils -> " + e.getMessage());
             return new ArrayList<Part>();
         }
 
