@@ -9,5 +9,6 @@ import java.util.ArrayList;
 public interface ServerInterface extends Remote {
     public void subscribeManager(String name, ManagerClientInterface managerClient) throws RemoteException;
     public void managerOption1(Part p) throws RemoteException;
+    public void managerOption2() throws RemoteException;
 
 }

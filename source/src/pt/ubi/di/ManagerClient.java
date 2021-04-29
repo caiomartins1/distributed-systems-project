@@ -71,7 +71,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
                         server.managerOption1(generatePart());
                         break;
                     case "2":
-                        System.out.println("2");
+                        server.managerOption2();
                         break;
                     case "3":
                         System.out.println("3");

@@ -15,6 +15,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Server extends UnicastRemoteObject implements ServerInterface {
     private static ManagerClientInterface managerClient;
@@ -26,7 +27,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
 
     // Discuss: Services are kinda redundant
-        // Add arrays to service?
+    // Add arrays to service?
 
     // File access problems
 
@@ -47,9 +48,14 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         managerClient.printOnClient("\nPart " + p.getType() + " added with success");
     }
 
+    public void managerOption2() throws RemoteException {
+
+    }
+
     private void loadData() {
         parts = FileUtils.retrieveParts();
         System.out.println("Loading data...");
+        // TODO: Remove debug log
         System.out.println(parts.toString());
     }
 
