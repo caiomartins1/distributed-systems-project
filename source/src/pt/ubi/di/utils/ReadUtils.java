@@ -36,7 +36,7 @@ public class ReadUtils {
         int i = -3;
         try {
             s = readString();
-            i = Integer.parseInt(s);
+            i = Integer.parseInt(s.trim());
         } catch (Exception e) {
             System.out.println("Error on read int: " + e.getMessage());
         }

@@ -13,6 +13,15 @@ public class Part implements Serializable {
     Float sellPrice;
     int minStock;
     int stock;
+
+    public ArrayList<String> getItems() {
+        return items;
+    }
+
+    public void setItems(ArrayList<String> items) {
+        this.items = items;
+    }
+
     private ArrayList<String> items; //TODO change maybe to a class later?
 
     public Part(String type, Float buyPrice, Float sellPrice, int minStock) {
@@ -98,6 +107,16 @@ public class Part implements Serializable {
     }
     public String toStringClean() {
         return "type=" +type+" Price=" +sellPrice+" stock=" + stock;
+    }
+
+    public String beautifyOutput() {
+        return "ID -> " + this.id +
+                "\nType -> " + this.type +
+                "\nBuy Price -> " + this.buyPrice +
+                "\nSell Price -> " + this.sellPrice +
+                "\nMinimum Stock -> " + this.minStock +
+                "\nItems in stock -> " + this.items.size() + "\n";
+
     }
 
 }
