@@ -9,8 +9,6 @@ public class ReadUtils {
 
     public static String readString() {
         String s = "";
-        //TODO comment for testing
-        // System.out.println();
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in), 1);
             s = in.readLine();
@@ -39,7 +37,7 @@ public class ReadUtils {
         int i = 0;
         try {
             s = readString();
-            i = Integer.parseInt(s);
+            i = Integer.parseInt(s.trim());
         } catch (Exception e) {
             System.out.println("Error on read int: " + e.getMessage());
         }
