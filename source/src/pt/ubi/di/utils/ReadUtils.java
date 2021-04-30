@@ -12,7 +12,6 @@ public class ReadUtils {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in), 1);
             s = in.readLine();
-
         } catch (IOException e) {
             System.out.println("Error on read String: "+e.getMessage());
         }
@@ -34,7 +33,7 @@ public class ReadUtils {
 
     public static int readInt() {
         String s = "";
-        int i = 0;
+        int i = -3;
         try {
             s = readString();
             i = Integer.parseInt(s.trim());
@@ -56,10 +55,12 @@ public class ReadUtils {
     }
 
     public static char readChar() {
+        String s = "";
         char c=' ';
         try {
-            c =(char) System.in.read();
-        } catch (IOException e) {
+            s = readString();
+            c = s.charAt(0);
+        } catch (Exception e) {
             System.out.println("Error on read char: "+e.getMessage());
         }
         return c;

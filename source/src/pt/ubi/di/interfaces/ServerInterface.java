@@ -7,6 +7,7 @@ import java.rmi.RemoteException;
 
 public interface ServerInterface extends Remote {
     public void subscribeManager(String name, ManagerClientInterface managerClient) throws RemoteException;
+    public void subscribeBuyer(String name, BuyerClientInterface client2) throws RemoteException;
 
     public void managerOption0() throws RemoteException;
     public void managerOption1(Part p) throws RemoteException;
@@ -14,6 +15,8 @@ public interface ServerInterface extends Remote {
     public void managerOption3() throws RemoteException;
     public void managerOption4() throws RemoteException;
     public void managerOption5() throws RemoteException;
+
+    public void buyerOption1() throws RemoteException;
 
 
 
