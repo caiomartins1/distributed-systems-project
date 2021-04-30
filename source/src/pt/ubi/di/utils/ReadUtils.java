@@ -35,7 +35,7 @@ public class ReadUtils {
     }
 
     public static int readInt() {
-        String s = "-1";
+        String s = "";
         int i = 0;
         try {
             s = readString();

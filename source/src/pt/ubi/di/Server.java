@@ -14,7 +14,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-
+// TODO: Not allow same name part
 public class Server extends UnicastRemoteObject implements ServerInterface {
     private static ManagerClientInterface managerClient;
     private static BuyerClientInterface buyerClient;
@@ -52,7 +52,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
             int quantity = -1;
             if (decision == 'y') {
                 do {//TODO not working correctly (not reading int throwing exception)
-                    managerClient.printOnClientNoNL("Type quantity: ");
+                    managerClient.printOnClient("Type quantity: ");
                     quantity = managerClient.readIntClient();
                     if (quantity > 0) {
                         buyingService.buySingleOrder(new Order(p, quantity));
@@ -138,15 +138,16 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         }
     }
 
-    public void managerOption3() {
-        try {
-            managerClient.printOnClient(buyingService.getPurchaseHistory().toString());
-        } catch (Exception e) {
-            System.out.println("Error printing purchase history" + e.getMessage());
-        }
-    }
+//    public void managerOption3() {
+//        try {
+//            managerClient.printOnClient(buyingService.getPurchaseHistory().toString());
+//        } catch (Exception e) {
+//            System.out.println("Error printing purchase history" + e.getMessage());
+//        }
+//    }
 
     public void managerOption3() throws RemoteException {
+        // TODO: Empty list fix
         managerClient.printOnClient("Available products to remove: ");
         int i = 1;
         for (Part part: parts) {
