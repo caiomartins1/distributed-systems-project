@@ -10,7 +10,7 @@ public class Receipt {
     float costItem;
     int quantity;
     ArrayList<String> items;
-    //TODO add date
+
 
     public Receipt(String id, String type, float price, float costItem, int quantity, ArrayList<String> items) {
         this.id = id;
@@ -18,7 +18,7 @@ public class Receipt {
         this.price = price;
         this.costItem = costItem;
         this.quantity = quantity;
-        this.items = items;//TODO: make sure its getting copied right
+        this.items = items;
     }
 
     public String getId() {
@@ -45,7 +45,7 @@ public class Receipt {
         return items.size();
     }
 
-    public String toStringReceipt(boolean printItem) {//TODO add id? maybe when its simplified more
+    public String toStringReceipt(boolean printItem) {
         if(printItem)
             return "type=" + type + " costPerItem=" + costItem + " quantity=" + quantity + " costPerItem*quantity=priceTotal=" + price + "\nitems=" + items;
         else

@@ -8,16 +8,30 @@ import pt.ubi.di.services.ManagerService;
 import pt.ubi.di.utils.FileUtils;
 import pt.ubi.di.utils.ReadUtils;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-// TODO: Not allow same name part
+// TODO: 0 -> format receipt print
+// TODO: 0 -> format IDs
+// TODO: 2 -> Store balance
+// TODO: 3 -> Remote Setup
+// TODO: 4 -> Add date to receipt and part
+// TODO: 4 -> add name to receipt
+// TODO: 5 -> change arraylist of string to array list of items (receipts, Part...)
+// TODO: 5 -> Validate prod name
+// TODO: 5 -> Write Receipts
+// TODO: 5 -> make sure stock are written
+// TODO: 5 -> Convert buyer to multi buyers
+// TODO: 5 -> check all listings client and manager;
+
 public class Server extends UnicastRemoteObject implements ServerInterface {
-    private static ManagerClientInterface managerClient;
     private static BuyerClientInterface buyerClient;
+    private static ArrayList<ManagerClientInterface> mClients;
 
     private static ManagerService mService;
 
@@ -26,19 +40,20 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     private static Purchase buyingService;
     private static Sale sellingService;
 
-    private float storeBalance;//TODO
+    private float storeBalance;
 
     public Server() throws RemoteException {
         super();
         mService = new ManagerService();
         buyingService = new Purchase();
         sellingService = new Sale();
+        mClients = new ArrayList<>();
         loadData();
     }
 
     public void subscribeManager(String name, ManagerClientInterface client) {
         System.out.println("Subscribing..." + name);
-        managerClient = client;
+        mClients.add(client);
     }
 
     public void subscribeBuyer(String name, BuyerClientInterface client2) {
@@ -46,25 +61,36 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         buyerClient = client2;
     }
 
-    public void managerOption1(Part p) throws RemoteException {
+    private void loadData() {
+        parts = FileUtils.retrieveParts();
+        System.out.println("Loading data...");
+        // TODO: Remove debug log
+        System.out.println(parts.toString());
+    }
 
-        managerClient.printOnClient("---- Registering new part ----");
+    public void managerOption0() throws RemoteException {
+
+    }
+
+    public void managerOption1(ManagerClientInterface client, Part p) throws RemoteException {
+
+        client.printOnClient("---- Registering new part ----");
         mService.registerPart(parts, p);
-        managerClient.printOnClient("\n---- Part " + p.getType() + " added with success ----");
+        client.printOnClient("\n---- Part " + p.getType() + " added with success ----");
 
         try {
-            managerClient.printOnClient("Do you wish to buy stock for this part?(y/n)");
-            char decision = managerClient.readCharClient();
+            client.printOnClient("Do you wish to buy stock for this part?(y/n)");
+            char decision = client.readCharClient();
             int quantity = -1;
             if (decision == 'y') {
-                do {//TODO not working correctly (not reading int throwing exception)
-                    managerClient.printOnClient("Type quantity: ");
-                    quantity = managerClient.readIntClient();
+                do {
+                    client.printOnClient("Type quantity: ");
+                    quantity = client.readIntClient();
                     if (quantity > 0) {
                         buyingService.buySingleOrder(new Order(p, quantity));
-                        managerClient.printOnClient("Purchase made");
+                        client.printOnClient("Purchase made");
                     } else {
-                        managerClient.printOnClient("____Wrong value____");
+                        client.printOnClient("____Wrong value____");
                     }
                 } while (quantity <= 0);
             } else {
@@ -73,81 +99,73 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         } catch (Exception e) {
             System.out.println("Error adding stock: " + e);
         }
-        managerClient.printOnClient("\nPart \"" + p.getType() + "\" added with success");
+        client.printOnClient("\nPart \"" + p.getType() + "\" added with success");
     }
 
-    public void managerOption2() throws RemoteException {
+    public void managerOption2(ManagerClientInterface client) throws RemoteException {
 
         //menu print
-        managerClient.printOnClient("---- Buying from supplier ----");
+        client.printOnClient("---- Buying from supplier ----");
         for (int i = 0; i < parts.size(); ++i)//Print all parts available and their index on list
-            managerClient.printOnClient(i + ":------>" + parts.get(i).toStringClean());
-        managerClient.printOnClient("choose what to buy, by number:\nType -2 to complete the order\nType -1 to cancel the order");
+            client.printOnClient(i + ":------>" + parts.get(i).toStringClean());
+        client.printOnClient("choose what to buy, by number:\nType -2 to complete the order\nType -1 to cancel the order");
 
         ArrayList<Order> orders = new ArrayList<>();
 
         boolean eval = true;
         while (eval) {// loop to decide quantities for parts
-            managerClient.printOnClientNoNL("Type product: ");
-            int option = managerClient.readIntClient();
+            client.printOnClientNoNL("Type product: ");
+            int option = client.readIntClient();
 
             if (option == -1) {
-                managerClient.printOnClient("____Order canceled____");
+                client.printOnClient("____Order canceled____");
                 return;
             } else if (option == -2) {
-                managerClient.printOnClient("Confirming Order.....");
+                client.printOnClient("Confirming Order.....");
                 eval = false;
 
             } else {
                 if (0 <= option && option < parts.size()) {
-                    managerClient.printOnClientNoNL("Product: " + parts.get(option).getType() + " -> type quantity:");
-                    int quantity = managerClient.readIntClient();
+                    client.printOnClientNoNL("Product: " + parts.get(option).getType() + " -> type quantity:");
+                    int quantity = client.readIntClient();
                     Part part = parts.get(option);
                     System.out.println(part.toString());
                     if (quantity > 0) {
                         orders.add(new Order(part, quantity));
                     } else {
-                        managerClient.printOnClient("____No valid number____");
+                        client.printOnClient("____No valid number____");
                     }
                 } else {
-                    managerClient.printOnClient("____Wrong value____");
+                    client.printOnClient("____Wrong value____");
                 }
             }
         }
 
         if (orders.isEmpty()) {
-            managerClient.printOnClient("____No orders made, exiting menu____");
+            client.printOnClient("____No orders made, exiting menu____");
         } else {
             try {
                 for (Order value : orders) {
-                    managerClient.printOnClient(value.getPart().toStringClean());
+                    client.printOnClient(value.getPart().toStringClean());
                 }
                 AdvanceReceipt advSlip = buyingService.buyOrder(orders);
-                managerClient.printOnClientNoNL("Checking order");
+                client.printOnClientNoNL("Checking order");
                 Thread.sleep(500);
-                managerClient.printOnClientNoNL(".");
+                client.printOnClientNoNL(".");
                 Thread.sleep(500);
-                managerClient.printOnClientNoNL(".");
+                client.printOnClientNoNL(".");
                 Thread.sleep(500);
-                managerClient.printOnClientNoNL(".");
+                client.printOnClientNoNL(".");
                 Thread.sleep(500);
-                managerClient.printOnClientNoNL(".\n");
-                managerClient.printOnClient("---- Success!!!! ----\n" + advSlip.toString());
+                client.printOnClientNoNL(".\n");
+                client.printOnClient("---- Success!!!! ----\n" + advSlip.toString());
             } catch (Exception e) {
                 System.out.println("ERROR on Thread: " + e.getMessage());
             }
         }
     }
 
-    public void managerOption5() {
-        try {
-            managerClient.printOnClient(buyingService.getPurchaseHistory().toString());
-        } catch (Exception e) {
-            System.out.println("Error printing purchase history" + e.getMessage());
-        }
-    }
-
-    public void managerOption3() throws RemoteException {
+    public void managerOption3(ManagerClientInterface managerClient) throws RemoteException {
 
         if (parts.size() == 0) {
             managerClient.printOnClient("No part registered yet!");
@@ -186,11 +204,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
     }
 
-    public void managerOption0() throws RemoteException {
-
-    }
-
-    public void managerOption4() throws RemoteException {
+    public void managerOption4(ManagerClientInterface managerClient) throws RemoteException {
         managerClient.printOnClient(
                 "----- Choose a filter -----\n" +
                         "1. Type\n" +
@@ -222,13 +236,14 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         }
     }
 
-
-    private void loadData() {
-        parts = FileUtils.retrieveParts();
-        System.out.println("Loading data...");
-        // TODO: Remove debug log
-        System.out.println(parts.toString());
+    public void managerOption5(ManagerClientInterface managerClient) {
+        try {
+            managerClient.printOnClient(buyingService.getPurchaseHistory().toString());
+        } catch (Exception e) {
+            System.out.println("Error printing purchase history" + e.getMessage());
+        }
     }
+
 
     public void buyerOption1() throws RemoteException {
 
@@ -296,10 +311,9 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnknownHostException {
         String s;
         System.setSecurityManager(new SecurityManager());
-
         try {
             LocateRegistry.createRegistry(1099);
             Server server = new Server();

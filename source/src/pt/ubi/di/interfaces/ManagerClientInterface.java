@@ -9,5 +9,5 @@ public interface ManagerClientInterface extends Remote {
     public String readStringClient() throws RemoteException;
     public int readIntClient() throws RemoteException;
     public char readCharClient() throws RemoteException;
-
+    public String getClientName() throws RemoteException;
 }

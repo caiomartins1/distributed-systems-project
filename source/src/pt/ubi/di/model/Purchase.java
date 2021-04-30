@@ -30,7 +30,7 @@ public class Purchase {
      * @return receipt
      */
     private Receipt buySinglePart(int quantity, Part part) {
-        float price = 0.00F;//TODO initialize here or somewhere else
+        float price = 0.00F;
         tempItems.clear();
         float buyPrice = part.getBuyPrice();
         for (int i = 0; i < quantity; i++) {

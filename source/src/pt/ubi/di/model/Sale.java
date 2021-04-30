@@ -26,7 +26,7 @@ public class Sale {
      * @return receipt
      */
     private Receipt sellingSinglePart(int quantity, Part part) {
-        float price = 0.00F;//TODO initialize here or somewhere else
+        float price = 0.00F;
         tempItems.clear();
         float sellPrice = part.getSellPrice();
         for (int i = 0; i < quantity; i++) {

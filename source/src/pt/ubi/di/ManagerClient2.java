@@ -10,12 +10,12 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 
-public class ManagerClient extends UnicastRemoteObject implements ManagerClientInterface {
+public class ManagerClient2 extends UnicastRemoteObject implements ManagerClientInterface {
     private String id;
 
-    public ManagerClient() throws RemoteException {
+    public ManagerClient2() throws RemoteException {
         super();
-        id = "Caio";
+        id = "James";
     }
 
     public void printOnClient(String s) throws RemoteException {
@@ -44,7 +44,6 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
         System.out.print("Enter Part type: ");
         String type = ReadUtils.readString();
 
-
         System.out.print("Enter Part buy price: ");
         float buyPrice = ReadUtils.readFloat();
 
@@ -68,7 +67,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
         try {
             LocateRegistry.getRegistry(1099);
             ServerInterface server = (ServerInterface) Naming.lookup("server");
-            ManagerClient mClient = new ManagerClient();
+            ManagerClient2 mClient = new ManagerClient2();
             server.subscribeManager(mClient.id, mClient);
 
             System.out.println("----- Connected to server -----");
@@ -77,7 +76,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
                 System.out.print(
                         "----- Store Manager Menu -----\n" +
                                 "----- Choose an action: -----\n" +
-                                    "1. Register a product\n" + // DONE need valid (caio), int bug (vitor)
+                                "1. Register a product\n" + // DONE need valid (caio), int bug (vitor)
                                 "2. Add stock to existing part(s)\n" + // DONE -> maybe formatting improve (vitor)
                                 "3. Remove a part\n" +
                                 "4. List existing parts\n" +

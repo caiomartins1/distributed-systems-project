@@ -9,7 +9,6 @@ import java.util.UUID;
  * it as a unique id
  * it as a id for its "buyer"
  * it as a list of receipts per part
- *
  */
 public class AdvanceReceipt {
 
@@ -17,32 +16,31 @@ public class AdvanceReceipt {
     ArrayList<Receipt> advanceSlip;
     String whoFor;
     float totalCost;
-    //TODO add date
 
     public AdvanceReceipt(ArrayList<Receipt> advanceSlip, String whoFor) {
         this.advanceSlip = new ArrayList<>();
         this.advanceSlip = (ArrayList<Receipt>) advanceSlip.clone();
         this.id = UUID.randomUUID().toString();
         this.whoFor = whoFor;
-        this.totalCost=0.0F;
+        this.totalCost = 0.0F;
         for (Receipt slip : advanceSlip)
-            this.totalCost =totalCost + slip.getPrice();
+            this.totalCost = totalCost + slip.getPrice();
     }
 
     public String toString() {
-        String note = "";//TODO may not work
+        String note = "";
         boolean printItem;
 
-        for(Receipt slip : advanceSlip){
-            if(slip.getItemsQuantity()>5)
-                printItem = false;//TODO complete
+        for (Receipt slip : advanceSlip) {
+            if (slip.getItemsQuantity() > 5)
+                printItem = false;
             else
-                printItem=true;//TODO complete
-            note = note.concat(slip.toStringReceipt(printItem)+"\n");//TODO item print not working propely need to check
+                printItem = true;
+            note = note.concat(slip.toStringReceipt(printItem) + "\n");
         }
-        return ("__________________ PRINTING " + whoFor + " RECEIPT FOR: " + id +
-                "\n" + note +
-                "__________________" + "__________________ END OF RECEIPT __________________\n");
+        return ("__________________ PRINTING " + whoFor + " RECEIPT FOR: " + id + "__________________" +
+                "\n" + note
+                + "__________________ END OF RECEIPT __________________\n");
     }
 
 }

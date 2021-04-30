@@ -8,7 +8,7 @@ public class Order {
     int quantity;
 
     public Order(Part part, int quantity) {
-        this.part = part;//TODO ?? ref or copy what should it be
+        this.part = part;
         this.quantity = quantity;
     }
 

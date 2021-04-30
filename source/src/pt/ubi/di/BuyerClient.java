@@ -8,6 +8,7 @@ import java.rmi.Naming;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 public class BuyerClient extends UnicastRemoteObject implements BuyerClientInterface{
@@ -40,8 +41,9 @@ public class BuyerClient extends UnicastRemoteObject implements BuyerClientInter
         System.setSecurityManager(new SecurityManager());
 
         try{
-            LocateRegistry.createRegistry(1299);
-            ServerInterface server = (ServerInterface) Naming.lookup("server");
+
+            Registry registry = LocateRegistry.getRegistry(1099);
+            ServerInterface server = (ServerInterface) registry.lookup("server");
             server.subscribeBuyer("Buyer Client 1", new BuyerClient());
 
             System.out.println("----- Connected to server -----");
