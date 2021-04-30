@@ -32,7 +32,7 @@ public class ManagerService {
                 }
             });
 
-            for(Part part: p) {
+            for (Part part : p) {
                 s += part.beautifyOutput() + "\n";
             }
         }
@@ -53,7 +53,7 @@ public class ManagerService {
                 }
             });
 
-            for(Part part: p) {
+            for (Part part : p) {
                 s += part.beautifyOutput() + "\n";
             }
         }
@@ -74,13 +74,14 @@ public class ManagerService {
                 }
             });
 
-            for(Part part: p) {
+            for (Part part : p) {
                 s += part.beautifyOutput() + "\n";
             }
         }
 
         return s;
     }
+
     public String listByStockItems(ArrayList<Part> p) {
         String s = "";
 
@@ -94,7 +95,7 @@ public class ManagerService {
                 }
             });
 
-            for(Part part: p) {
+            for (Part part : p) {
                 s += part.beautifyOutput() + "\n";
             }
         }

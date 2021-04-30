@@ -40,7 +40,7 @@ public class BuyerClient extends UnicastRemoteObject implements BuyerClientInter
         System.setSecurityManager(new SecurityManager());
 
         try{
-            LocateRegistry.createRegistry(1199);
+            LocateRegistry.createRegistry(1299);
             ServerInterface server = (ServerInterface) Naming.lookup("server");
             server.subscribeBuyer("Buyer Client 1", new BuyerClient());
 
