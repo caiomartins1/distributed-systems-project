@@ -138,13 +138,13 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         }
     }
 
-//    public void managerOption3() {
-//        try {
-//            managerClient.printOnClient(buyingService.getPurchaseHistory().toString());
-//        } catch (Exception e) {
-//            System.out.println("Error printing purchase history" + e.getMessage());
-//        }
-//    }
+    public void managerOption5() {
+        try {
+            managerClient.printOnClient(buyingService.getPurchaseHistory().toString());
+        } catch (Exception e) {
+            System.out.println("Error printing purchase history" + e.getMessage());
+        }
+    }
 
     public void managerOption3() throws RemoteException {
         // TODO: Empty list fix

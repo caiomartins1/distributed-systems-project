@@ -67,13 +67,13 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
                 System.out.print(
                                 "----- Store Manager Menu\n -----" +
                                 "----- Choose an action: -----\n" +
-                                "1. Register a product\n" +
-                                "2. Add stock to existing part(s)\n" +
-                                "3. Remove a part\n" +
-                                "4. List existing parts\n" +
-                                "5. List purchases to suppliers\n" +
-                                "6. List sells\n" +
-                                "0. Exit\n" +
+                                "1. Register a product\n" + // DONE need valid (caio), int bug (vitor)
+                                "2. Add stock to existing part(s)\n" + // DONE -> maybe formatting improve (vitor)
+                                "3. Remove a part\n" + // DONE (caio search bug)
+                                "4. List existing parts\n" + // DOING (caio)
+                                "5. List purchases to suppliers\n" + // DONE -> maybe formatting improve (vitor)
+                                "6. List sells\n" + // DOING (vitor)
+                                "0. Exit\n" + // DONE
                                 "Your action:"
                 );
 
@@ -93,7 +93,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
                         System.out.println("4");
                         break;
                     case "5":
-                        server.managerOption3();
+                        server.managerOption5();
                         break;
                     case "6":
                         System.out.println("6");
