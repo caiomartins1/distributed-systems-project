@@ -3,9 +3,11 @@ package pt.ubi.di;
 import pt.ubi.di.interfaces.BuyerClientInterface;
 import pt.ubi.di.interfaces.ManagerClientInterface;
 import pt.ubi.di.interfaces.ServerInterface;
-import pt.ubi.di.model.Part;
+import pt.ubi.di.model.*;
 import pt.ubi.di.services.ManagerService;
 import pt.ubi.di.utils.FileUtils;
+import pt.ubi.di.utils.ReadUtils;
+
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -21,11 +23,16 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
     private static ArrayList<Part> parts;
 
+    private static Purchase buyingService;
+    private static Sale sellingService;
+
+    private float storeBalance;//TODO
+
     public Server() throws RemoteException {
         super();
         mService = new ManagerService();
+        buyingService = new Purchase();
         loadData();
-
     }
 
     public void subscribeManager(String name, ManagerClientInterface client) {
@@ -34,12 +41,100 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     }
 
     public void managerOption1(Part p) throws RemoteException {
+
+        managerClient.printOnClient("---- Registering new part ----");
         mService.registerPart(parts, p);
-        managerClient.printOnClient("\nPart " + p.getType() + " added with success");
+        managerClient.printOnClient("\n---- Part " + p.getType() + " added with success ----");
+
+        try {
+            managerClient.printOnClient("Do you wish to buy stock for this part?(y/n)");
+            char decision = managerClient.readCharClient();
+            int quantity = -1;
+            if (decision == 'y') {
+                do {//TODO not working correctly (not reading int throwing exception)
+                    managerClient.printOnClientNoNL("Type quantity: ");
+                    quantity = managerClient.readIntClient();
+                    if (quantity > 0) {
+                        buyingService.buySingleOrder(new Order(p, quantity));
+                        managerClient.printOnClient("Purchase made");
+                    } else {
+                        managerClient.printOnClient("____Wrong value____");
+                    }
+                }while(quantity>0);
+            } else {
+                System.out.println("No purchase made for part");
+            }
+        }catch (Exception e){
+            System.out.println("Error adding stock: "+e);
+        }
     }
 
     public void managerOption2() throws RemoteException {
 
+        //menu print
+        managerClient.printOnClient("---- Buying from supplier ----");
+        for(int i=0;i<parts.size();++i)//Print all parts available and their index on list
+            managerClient.printOnClient(i+":------>"+parts.get(i).toStringClean());
+        managerClient.printOnClient("choose what to buy, by number:\nType -2 to complete the order\"\nType -1 to cancel the order");
+
+        ArrayList<Order> orders = new ArrayList<>();
+
+        boolean eval=true;
+        while(eval){// loop to decide quantities for parts
+            managerClient.printOnClientNoNL("Type product: ");
+            int option = managerClient.readIntClient();
+
+            if(option==-1){
+                managerClient.printOnClient("____Order canceled____");
+                return;
+            }
+            else if (option==-2) {
+                managerClient.printOnClient("Confirming Order.....");
+                eval = false;
+            }
+            else{
+                if(0<=option && option<parts.size()){
+                    managerClient.printOnClientNoNL("Product: "+parts.get(option).getType()+" ");
+                    managerClient.printOnClientNoNL("Type quantity: ");
+                    int quantity = managerClient.readIntClient();
+                    Part part = parts.get(option);
+                    System.out.println(part.toString());
+                    if(quantity>0) {
+                        orders.add(new Order(part, quantity));
+                    }
+                    else {
+                        managerClient.printOnClient("____No valid number____");
+                    }
+                }
+                else {
+                    managerClient.printOnClient("____Wrong value____");
+                }
+            }
+        }
+
+        if(orders.isEmpty()) {
+            managerClient.printOnClient("____No orders made, exiting menu____");
+        }
+        else {
+            try {
+                for (Order value : orders) {
+                    managerClient.printOnClient(value.getPart().toStringClean());
+                }
+                AdvanceReceipt advSlip = buyingService.buyOrder(orders);
+                managerClient.printOnClientNoNL("Checking order");
+                Thread.sleep(500);
+                managerClient.printOnClientNoNL(".");
+                Thread.sleep(500);
+                managerClient.printOnClientNoNL(".");
+                Thread.sleep(500);
+                managerClient.printOnClientNoNL(".");
+                Thread.sleep(500);
+                managerClient.printOnClientNoNL(".\n");
+                managerClient.printOnClient("---- Success!!!! ----\n"+advSlip.toString());
+            } catch (Exception e) {
+                System.out.println("ERROR on Thread: " + e.getMessage());
+            }
+        }
     }
 
     private void loadData() {
