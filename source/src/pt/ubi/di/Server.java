@@ -67,6 +67,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         }catch (Exception e){
             System.out.println("Error adding stock: "+e);
         }
+        managerClient.printOnClient("\nPart \"" + p.getType() + "\" added with success");
     }
 
     public void managerOption2() throws RemoteException {
@@ -143,6 +144,44 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         } catch (Exception e) {
             System.out.println("Error printing purchase history" + e.getMessage());
         }
+    }
+
+    public void managerOption3() throws RemoteException {
+        managerClient.printOnClient("Available products to remove: ");
+        int i = 1;
+        for (Part part: parts) {
+            managerClient.printOnClient(i + ". " + part.getType());
+            i++;
+        }
+        managerClient.printOnClient("Choose a number (1 to " +  parts.size() + "): ");
+        int itemToDelete = managerClient.readIntClient();
+
+
+        if (itemToDelete < 1 || itemToDelete > parts.size()) {
+            managerClient.printOnClient("Invalid Input");
+            return;
+        }
+
+        managerClient.printOnClient("Are you sure you want to delete the part: " + parts.get(itemToDelete - 1).getType() + "? (y/n)");
+        String confirmation = managerClient.readStringClient();
+
+        switch (confirmation) {
+            case "y":
+                mService.deletePart(parts, itemToDelete - 1);
+                managerClient.printOnClient("Item removed with success");
+                break;
+            case "n":
+                managerClient.printOnClient("Action canceled");
+                break;
+            default:
+                managerClient.printOnClient("Invalid input");
+                break;
+        }
+
+    }
+
+    public void managerOption0() throws RemoteException {
+
     }
 
     private void loadData() {

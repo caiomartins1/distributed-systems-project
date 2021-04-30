@@ -14,4 +14,6 @@ public interface ServerInterface extends Remote {
 
     public void managerOption3() throws RemoteException;
 
+    public void managerOption0() throws RemoteException;
+
 }
