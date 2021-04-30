@@ -51,7 +51,7 @@ public class Purchase {
         for (Order order : orders) {
             receipts.add(buySinglePart(order.getQuantity(), order.getPart()));
         }
-        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts, "BUYING");
+        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts, "BUYING(From supplier)");
         purchaseHistory.add(advanceReceipt);
         return advanceReceipt;
     }
@@ -65,7 +65,7 @@ public class Purchase {
     public AdvanceReceipt buySingleOrder(Order order) {
         receipts.clear();
         receipts.add(buySinglePart(order.getQuantity(), order.getPart()));
-        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts, "BUYING");
+        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts, "BUYING(from supplier)");
         purchaseHistory.add(advanceReceipt);
         return advanceReceipt;
     }

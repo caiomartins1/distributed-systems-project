@@ -40,6 +40,11 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         managerClient = client;
     }
 
+    public void subscribeBuyer(String name, BuyerClientInterface client2) {
+        System.out.println("Subscribing..." + name);
+        buyerClient = client2;
+    }
+
     public void managerOption1(Part p) throws RemoteException {
 
         managerClient.printOnClient("---- Registering new part ----");
@@ -60,7 +65,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     } else {
                         managerClient.printOnClient("____Wrong value____");
                     }
-                }while(quantity>0);
+                }while(quantity<=0);
             } else {
                 System.out.println("No purchase made for part");
             }
@@ -95,8 +100,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
             }
             else{
                 if(0<=option && option<parts.size()){
-                    managerClient.printOnClientNoNL("Product: "+parts.get(option).getType()+" ");
-                    managerClient.printOnClientNoNL("type quantity: ");
+                    managerClient.printOnClientNoNL("Product: "+parts.get(option).getType()+" -> type quantity:");
                     int quantity = managerClient.readIntClient();
                     Part part = parts.get(option);
                     System.out.println(part.toString());
@@ -190,6 +194,78 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         System.out.println("Loading data...");
         // TODO: Remove debug log
         System.out.println(parts.toString());
+    }
+
+    public void buyerOption1() throws RemoteException {
+
+        //menu print
+        buyerClient.printOnClient("---- Buying from Store ----");
+        for(int i=0;i<parts.size();++i)//Print all parts available and their index on list
+            buyerClient.printOnClient(i+":------>"+parts.get(i).toStringClean());
+        buyerClient.printOnClient("choose what to buy, by number:\nType -2 to complete the order\nType -1 to cancel the order");
+
+        ArrayList<Order> orders = new ArrayList<>();
+
+        boolean eval=true;
+        while(eval){// loop to decide quantities for parts
+            buyerClient.printOnClientNoNL("Type product: ");
+            int option = buyerClient.readIntClient();
+
+            if(option==-1){
+                buyerClient.printOnClient("____Order canceled____");
+                return;
+            }
+            else if (option==-2) {
+                buyerClient.printOnClient("Confirming Order.....");
+                eval = false;
+            }
+            else{
+                if(0<=option && option<parts.size()){
+                    buyerClient.printOnClientNoNL("Product: "+parts.get(option).getType()+" -> type quantity:");
+                    int quantity = buyerClient.readIntClient();
+                    Part part = parts.get(option);
+                    System.out.println(part.toString());
+                    if(quantity>0) {
+                        if (quantity<parts.get(option).getStock()){
+                            orders.add(new Order(part, quantity));
+                        }
+                        else{
+                            buyerClient.printOnClient("Not enough stock");
+                        }
+                    }
+                    else {
+                        buyerClient.printOnClient("____No valid number____");
+                    }
+                }
+                else {
+                    buyerClient.printOnClient("____Wrong value____");
+                }
+            }
+        }
+
+        if(orders.isEmpty()) {
+            buyerClient.printOnClient("____No orders made, exiting menu____");
+        }
+        else {
+            try {
+                for (Order value : orders) {
+                    buyerClient.printOnClient(value.getPart().toStringClean());
+                }
+                AdvanceReceipt advSlip = sellingService.sellOrder(orders);
+                buyerClient.printOnClientNoNL("Checking order");
+                Thread.sleep(500);
+                buyerClient.printOnClientNoNL(".");
+                Thread.sleep(500);
+                buyerClient.printOnClientNoNL(".");
+                Thread.sleep(500);
+                buyerClient.printOnClientNoNL(".");
+                Thread.sleep(500);
+                buyerClient.printOnClientNoNL(".\n");
+                buyerClient.printOnClient("---- Success!!!! ----\n"+advSlip.toString());
+            } catch (Exception e) {
+                System.out.println("ERROR on Thread: " + e.getMessage());
+            }
+        }
     }
 
     public static void main(String[] args) {
