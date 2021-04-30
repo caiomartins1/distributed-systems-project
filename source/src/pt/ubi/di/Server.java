@@ -75,7 +75,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         managerClient.printOnClient("---- Buying from supplier ----");
         for(int i=0;i<parts.size();++i)//Print all parts available and their index on list
             managerClient.printOnClient(i+":------>"+parts.get(i).toStringClean());
-        managerClient.printOnClient("choose what to buy, by number:\nType -2 to complete the order\"\nType -1 to cancel the order");
+        managerClient.printOnClient("choose what to buy, by number:\nType -2 to complete the order\nType -1 to cancel the order");
 
         ArrayList<Order> orders = new ArrayList<>();
 
@@ -95,7 +95,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
             else{
                 if(0<=option && option<parts.size()){
                     managerClient.printOnClientNoNL("Product: "+parts.get(option).getType()+" ");
-                    managerClient.printOnClientNoNL("Type quantity: ");
+                    managerClient.printOnClientNoNL("type quantity: ");
                     int quantity = managerClient.readIntClient();
                     Part part = parts.get(option);
                     System.out.println(part.toString());
@@ -134,6 +134,14 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
             } catch (Exception e) {
                 System.out.println("ERROR on Thread: " + e.getMessage());
             }
+        }
+    }
+
+    public void managerOption3() {
+        try {
+            managerClient.printOnClient(buyingService.getPurchaseHistory().toString());
+        } catch (Exception e) {
+            System.out.println("Error printing purchase history" + e.getMessage());
         }
     }
 

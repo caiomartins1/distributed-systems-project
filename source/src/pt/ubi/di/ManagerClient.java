@@ -71,7 +71,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
                                 "2. Add stock to existing part(s)\n" +
                                 "3. Remove a part\n" +
                                 "4. List existing parts\n" +
-                                "5. List purchases to supplier\n" +
+                                "5. List purchases to suppliers\n" +
                                 "6. List sells\n" +
                                 "0. Exit\n" +
                                 "Your action:"
@@ -93,7 +93,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
                         System.out.println("4");
                         break;
                     case "5":
-                        System.out.println("5");
+                        server.managerOption3();
                         break;
                     case "6":
                         System.out.println("6");

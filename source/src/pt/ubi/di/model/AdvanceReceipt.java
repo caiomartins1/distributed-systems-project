@@ -38,11 +38,11 @@ public class AdvanceReceipt {
                 printItem = false;//TODO complete
             else
                 printItem=true;//TODO complete
-            note = note.concat(slip.toStringReceipt(printItem)+"\n");
+            note = note.concat(slip.toStringReceipt(printItem)+"\n");//TODO item print not working propely need to check
         }
         return ("__________________ PRINTING " + whoFor + " RECEIPT FOR: " + id +
                 "\n" + note +
-                "\n__________________" + "__________________ END OF RECEIPT __________________\n");
+                "__________________" + "__________________ END OF RECEIPT __________________\n");
     }
 
 }
