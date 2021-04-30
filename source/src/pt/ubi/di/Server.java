@@ -60,12 +60,12 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     } else {
                         managerClient.printOnClient("____Wrong value____");
                     }
-                }while(quantity>0);
+                } while (quantity > 0);
             } else {
                 System.out.println("No purchase made for part");
             }
-        }catch (Exception e){
-            System.out.println("Error adding stock: "+e);
+        } catch (Exception e) {
+            System.out.println("Error adding stock: " + e);
         }
         managerClient.printOnClient("\nPart \"" + p.getType() + "\" added with success");
     }
@@ -74,49 +74,44 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
         //menu print
         managerClient.printOnClient("---- Buying from supplier ----");
-        for(int i=0;i<parts.size();++i)//Print all parts available and their index on list
-            managerClient.printOnClient(i+":------>"+parts.get(i).toStringClean());
+        for (int i = 0; i < parts.size(); ++i)//Print all parts available and their index on list
+            managerClient.printOnClient(i + ":------>" + parts.get(i).toStringClean());
         managerClient.printOnClient("choose what to buy, by number:\nType -2 to complete the order\nType -1 to cancel the order");
 
         ArrayList<Order> orders = new ArrayList<>();
 
-        boolean eval=true;
-        while(eval){// loop to decide quantities for parts
+        boolean eval = true;
+        while (eval) {// loop to decide quantities for parts
             managerClient.printOnClientNoNL("Type product: ");
             int option = managerClient.readIntClient();
 
-            if(option==-1){
+            if (option == -1) {
                 managerClient.printOnClient("____Order canceled____");
                 return;
-            }
-            else if (option==-2) {
+            } else if (option == -2) {
                 managerClient.printOnClient("Confirming Order.....");
                 eval = false;
-            }
-            else{
-                if(0<=option && option<parts.size()){
-                    managerClient.printOnClientNoNL("Product: "+parts.get(option).getType()+" ");
+            } else {
+                if (0 <= option && option < parts.size()) {
+                    managerClient.printOnClientNoNL("Product: " + parts.get(option).getType() + " ");
                     managerClient.printOnClientNoNL("type quantity: ");
                     int quantity = managerClient.readIntClient();
                     Part part = parts.get(option);
                     System.out.println(part.toString());
-                    if(quantity>0) {
+                    if (quantity > 0) {
                         orders.add(new Order(part, quantity));
-                    }
-                    else {
+                    } else {
                         managerClient.printOnClient("____No valid number____");
                     }
-                }
-                else {
+                } else {
                     managerClient.printOnClient("____Wrong value____");
                 }
             }
         }
 
-        if(orders.isEmpty()) {
+        if (orders.isEmpty()) {
             managerClient.printOnClient("____No orders made, exiting menu____");
-        }
-        else {
+        } else {
             try {
                 for (Order value : orders) {
                     managerClient.printOnClient(value.getPart().toStringClean());
@@ -131,7 +126,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 managerClient.printOnClientNoNL(".");
                 Thread.sleep(500);
                 managerClient.printOnClientNoNL(".\n");
-                managerClient.printOnClient("---- Success!!!! ----\n"+advSlip.toString());
+                managerClient.printOnClient("---- Success!!!! ----\n" + advSlip.toString());
             } catch (Exception e) {
                 System.out.println("ERROR on Thread: " + e.getMessage());
             }
@@ -147,14 +142,18 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     }
 
     public void managerOption3() throws RemoteException {
-        // TODO: Empty list fix
+
+        if (parts.size() == 0) {
+            managerClient.printOnClient("No part registered yet!");
+            return;
+        }
         managerClient.printOnClient("Available products to remove: ");
         int i = 1;
-        for (Part part: parts) {
+        for (Part part : parts) {
             managerClient.printOnClient(i + ". " + part.getType());
             i++;
         }
-        managerClient.printOnClient("Choose a number (1 to " +  parts.size() + "): ");
+        managerClient.printOnClient("Choose a number (1 to " + parts.size() + "): ");
         int itemToDelete = managerClient.readIntClient();
 
 
@@ -184,6 +183,39 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     public void managerOption0() throws RemoteException {
 
     }
+
+    public void managerOption4() throws RemoteException {
+        managerClient.printOnClient(
+                "----- Choose a filter -----\n" +
+                        "1. Type\n" +
+                        "2. Buy Price\n" +
+                        "3. Sell price\n" +
+                        "4. Items in stock\n" +
+                        "Your Option: "
+        );
+
+        int option = managerClient.readIntClient();
+
+        switch (option) {
+            case 1:
+                managerClient.printOnClient(mService.listByTypeAlpha(parts));
+                break;
+            case 2:
+                managerClient.printOnClient(mService.listByBuyPrice(parts));
+                break;
+            case 3:
+                managerClient.printOnClient(mService.listBySellPrice(parts));
+                break;
+            case 4:
+                managerClient.printOnClient(mService.listByStockItems(parts));
+                break;
+
+            default:
+                managerClient.printOnClient("Invalid option!");
+                break;
+        }
+    }
+
 
     private void loadData() {
         parts = FileUtils.retrieveParts();
