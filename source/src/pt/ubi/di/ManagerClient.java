@@ -26,12 +26,12 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
         return ReadUtils.readInt();
     }
 
-    public void printOnClientNoNL(String s) throws RemoteException {
-        System.out.print(s);
-    }
-
     public char readCharClient() throws RemoteException{
         return ReadUtils.readChar();
+    }
+
+    public void printOnClientNoNL(String s) throws RemoteException {
+        System.out.print(s);
     }
 
     private static Part generatePart() {
@@ -40,6 +40,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
         System.out.print("Enter Part type: ");
         String type = ReadUtils.readString();
 
+        // TODO: Validate prod name
         System.out.print("Enter Part buy price: ");
         float buyPrice = ReadUtils.readFloat();
 
@@ -65,12 +66,12 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
 
             while (true) {
                 System.out.print(
-                                "----- Store Manager Menu\n -----" +
+                                "----- Store Manager Menu -----\n" +
                                 "----- Choose an action: -----\n" +
                                 "1. Register a product\n" + // DONE need valid (caio), int bug (vitor)
                                 "2. Add stock to existing part(s)\n" + // DONE -> maybe formatting improve (vitor)
-                                "3. Remove a part\n" + // DONE (caio search bug)
-                                "4. List existing parts\n" + // DOING (caio)
+                                "3. Remove a part\n" +
+                                "4. List existing parts\n" +
                                 "5. List purchases to suppliers\n" + // DONE -> maybe formatting improve (vitor)
                                 "6. List sells\n" + // DOING (vitor)
                                 "0. Exit\n" + // DONE
@@ -90,7 +91,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
                         server.managerOption3();
                         break;
                     case "4":
-                        System.out.println("4");
+                        server.managerOption4();
                         break;
                     case "5":
                         server.managerOption5();
