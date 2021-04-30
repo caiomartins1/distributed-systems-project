@@ -41,8 +41,26 @@ public class Receipt {
         return quantity;
     }
 
+    public int getItemsQuantity() {
+        return items.size();
+    }
+
+    public String toStringReceipt(boolean printItem) {//TODO add id? maybe when its simplified more
+        if(printItem)
+            return "type=" + type + " costPerItem=" + costItem + " quantity=" + quantity + " costPerItem*quantity=priceTotal=" + price + "\nitems=" + items;
+        else
+            return "type=" + type + " costPerItem=" + costItem + " quantity=" + quantity + " costPerItem*quantity=priceTotal=" + price;
+    }
+
+    public String toString(boolean printItems) {
+        if(printItems)
+            return "id=" + id + " type=" + type + " costPerItem=" + costItem + " quantity=" + quantity + " priceTotal=" + price + "\nitems=" + items;
+        else
+            return "id=" + id + " type=" + type + " costPerItem=" + costItem + " quantity=" + quantity + " priceTotal=" + price;
+    }
+
     @Override
-    public String toString() {//TODO organize print better
-        return "id=" + id + " type=" + type + " costItem=" + costItem + " quantity=" + quantity + " price=" + price + "\nitems=" + items;
+    public String toString() {
+        return "id=" + id + " type=" + type + " costPerItem=" + costItem + " quantity=" + quantity + " priceTotal=" + price + "\nitems=" + items;
     }
 }

@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class Part implements Serializable {
 
-    String id;
+    String id;//TODO find a way to simplify ID??
     String type;
     Float buyPrice;
     Float sellPrice;
@@ -45,6 +45,17 @@ public class Part implements Serializable {
         }
     }
 
+    public String addStock() {
+            String id = UUID.randomUUID().toString();
+            stock = stock + 1;
+            items.add(id);
+        return id;
+    }
+
+    public int getStock() {
+        return this.stock;
+    }
+
     public void alterBuyPrice(float buyPrice) {
         this.buyPrice = buyPrice;
     }
@@ -80,4 +91,13 @@ public class Part implements Serializable {
     public String getID() {
         return this.id;
     }
+
+    @Override
+    public String toString() {
+        return "id=" +id+ " type=" +type+ " buyPrice=" +buyPrice+ " sellPrice=" +sellPrice+ " minStock=" + minStock + " stock=" + stock + " items=" + items;
+    }
+    public String toStringClean() {
+        return "type=" +type+" Price=" +sellPrice+" stock=" + stock;
+    }
+
 }

@@ -26,37 +26,27 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
         return ReadUtils.readInt();
     }
 
+    public void printOnClientNoNL(String s) throws RemoteException {
+        System.out.print(s);
+    }
+
+    public char readCharClient() throws RemoteException{
+        return ReadUtils.readChar();
+    }
+
     private static Part generatePart() {
         System.out.println("----- Adding a new Part -----");
 
-        System.out.println("Enter Part type: ");
+        System.out.print("Enter Part type: ");
         String type = ReadUtils.readString();
 
-        System.out.println("Enter Part buy price: ");
+        System.out.print("Enter Part buy price: ");
         float buyPrice = ReadUtils.readFloat();
 
-        System.out.println("Enter Part sell price: ");
+        System.out.print("Enter Part sell price: ");
         float sellPrice = ReadUtils.readFloat();
 
-        System.out.println("Enter Part minimum stock: ");
-        int minStock = ReadUtils.readInt();
-
-        return new Part(type, buyPrice, sellPrice, minStock);
-    }
-
-    private static Part xd() {
-        System.out.println("----- Adding a new Part -----");
-
-        System.out.println("Enter Part type: ");
-        String type = ReadUtils.readString();
-
-        System.out.println("Enter Part buy price: ");
-        float buyPrice = ReadUtils.readFloat();
-
-        System.out.println("Enter Part sell price: ");
-        float sellPrice = ReadUtils.readFloat();
-
-        System.out.println("Enter Part minimum stock: ");
+        System.out.print("Enter Part minimum stock: ");
         int minStock = ReadUtils.readInt();
 
         return new Part(type, buyPrice, sellPrice, minStock);
@@ -74,16 +64,17 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
             System.out.println("----- Connected to server -----");
 
             while (true) {
-                System.out.println(
-                        "----- Choose an action: -----\n" +
+                System.out.print(
+                                "----- Store Manager Menu\n -----" +
+                                "----- Choose an action: -----\n" +
                                 "1. Register a product\n" +
-                                "2. Add a unit of existing product\n" + // buying from supplier
-                                "3. Remove a product\n" +
-                                "4. List existing products\n" +
-                                "5. List sells\n" +
-                                "6. List buys\n" +
+                                "2. Add stock to existing part(s)\n" +
+                                "3. Remove a part\n" +
+                                "4. List existing parts\n" +
+                                "5. List purchases to suppliers\n" +
+                                "6. List sells\n" +
                                 "0. Exit\n" +
-                                "Your action: "
+                                "Your action:"
                 );
 
                 option = ReadUtils.readString();
@@ -102,7 +93,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
                         System.out.println("4");
                         break;
                     case "5":
-                        System.out.println("5");
+                        server.managerOption3();
                         break;
                     case "6":
                         System.out.println("6");
