@@ -89,6 +89,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         client.printOnClient("---- Registering new part ----");
         mService.registerPart(parts, p);
         client.printOnClient("\n---- Part " + p.getType() + " added with success ----");
+        System.out.println("*** Manager " + client.getClientId() + " Added a new Part (" + p.getType() + ") ***");
 
         try {
             client.printOnClient("Do you wish to buy stock for this part?(y/n)");
@@ -101,6 +102,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     if (quantity > 0) {
                         buyingService.buySingleOrder(new Order(p, quantity), client.getClientId());
                         client.printOnClient("---- Purchase made ----");
+                        System.out.println("*** Manager " + client.getClientId() + " Added " + quantity + " items to " + p.getType() + " stock ***");
                     } else {
                         client.printOnClient("____Wrong value____");
                     }
@@ -116,16 +118,16 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         } catch (Exception e) {
             System.out.println("Error adding stock: " + e);
         }
-        client.printOnClient("\n---- Part \"" + p.getType() + "\" added with success ----");
+
         FileUtils.saveParts(parts);
         FileUtils.savePurchaseHistory(buyingService.getPurchaseHistory());
     }
 
     public void managerOption2(ManagerClientInterface client) throws RemoteException {
 
-        //menu print
+
         client.printOnClient("---- Buying from supplier ----");
-        for (int i = 0; i < parts.size(); ++i)//Print all parts available and their index on list
+        for (int i = 0; i < parts.size(); ++i)
             client.printOnClient(i + ":------>" + parts.get(i).toStringClean());
         client.printOnClient("choose what to buy, by number:\nType -2 to complete the order\nType -1 to cancel the order");
 
@@ -212,8 +214,10 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
         switch (confirmation) {
             case "y":
+                Part aux = parts.get(itemToDelete - 1);
                 mService.deletePart(parts, itemToDelete - 1);
                 managerClient.printOnClient("---- Item removed with success ----");
+                System.out.println("*** Manager " + managerClient.getClientId() + " Removed (" + aux.getType() + ") from the inventory ***");
                 break;
             case "n":
                 managerClient.printOnClient("____ Action canceled ____");
@@ -415,8 +419,8 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         String s;
         System.setSecurityManager(new SecurityManager());
         try {
-            String ipServer="192.168.1.83";
-            System.setProperty("java.rmi.server.hostname",ipServer);
+//            String ipServer="192.168.1.83";
+//            System.setProperty("java.rmi.server.hostname",ipServer);
 
             LocateRegistry.createRegistry(1099);
             Server server = new Server();

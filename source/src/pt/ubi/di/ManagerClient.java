@@ -73,10 +73,11 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
         System.setSecurityManager(new SecurityManager());
 
         try {
-            String ipServer = "192.168.1.84";
-            System.setProperty("java.rmi.server.hostname",ipServer);
+//            String ipServer = "192.168.1.83";
+//            System.setProperty("java.rmi.server.hostname", "192.168.1.83");
+            //-Djava.rmi.server.hostname=192.168.1.83
 
-            LocateRegistry.getRegistry(ipServer,1099);
+            LocateRegistry.getRegistry(1099);
             ServerInterface server = (ServerInterface) Naming.lookup("server");
             ManagerClient mClient = new ManagerClient();
             server.subscribeManager(mClient.getClientId(), mClient);
