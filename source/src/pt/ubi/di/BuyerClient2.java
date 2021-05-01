@@ -10,12 +10,13 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
+
 public class BuyerClient2 extends UnicastRemoteObject implements BuyerClientInterface {
     private String id;
 
     public BuyerClient2() throws RemoteException {
         super();
-        this.id = "Caio";
+        this.id = "Alice";
     }
 
     public void printOnClient(String s) throws RemoteException {
@@ -68,7 +69,7 @@ public class BuyerClient2 extends UnicastRemoteObject implements BuyerClientInte
                 System.out.print(
                         "----- Buyer Manager Menu -----\n" +
                                 "----- Choose an action: -----\n" +
-                                "1. Buy a product\n" + // DONE need valid (caio), int bug (vitor)
+                                "1. Buy a product\n" +
                                 "2. List existing parts\n" +
                                 "3. List sells\n" + // DOING (vitor)
                                 "0. Exit\n" +
@@ -88,10 +89,12 @@ public class BuyerClient2 extends UnicastRemoteObject implements BuyerClientInte
                         server.buyerOption3(bClient);
                         break;
                     case "0":
+                        server.buyerOption0(bClient);
                         System.out.println("Exiting...");
                         System.exit(0);
                         break;
                     default:
+
                         System.out.println("Invalid Option");
                         break;
                 }

@@ -17,7 +17,7 @@ public class ManagerClient2 extends UnicastRemoteObject implements ManagerClient
 
     public ManagerClient2() throws RemoteException {
         super();
-        id = "Caio";
+        id = "Vitor";
     }
 
     public void printOnClient(String s) throws RemoteException {
@@ -56,7 +56,14 @@ public class ManagerClient2 extends UnicastRemoteObject implements ManagerClient
         System.out.print("Enter Part minimum stock: ");
         int minStock = ReadUtils.readInt();
 
+        boolean isInfoValid = !type.isEmpty() && (buyPrice > 0) && (sellPrice > 0) && (minStock >= 0);
+
+        if (!isInfoValid) {
+            System.out.println("Part not created -> Invalid Input");
+            return null;
+        }
         return new Part(type, buyPrice, sellPrice, minStock);
+
     }
 
     public String getClientId() {
@@ -69,16 +76,16 @@ public class ManagerClient2 extends UnicastRemoteObject implements ManagerClient
 
         try {
             String ownIp = ShowInterfaces.getIp();
-            System.out.println("Own ip is: "+ownIp);
+            System.out.println("Own ip is: " + ownIp);
 
             System.out.print("Type Server ip: ");
             String ipServer = ReadUtils.readString();
-            if(ipServer.equals("")){
+            if (ipServer.equals("")) {
                 ipServer = ownIp;
             }
 
-            System.setProperty("java.rmi.server.hostname",ownIp);
-            Registry registry=LocateRegistry.getRegistry(ipServer,1099);
+            System.setProperty("java.rmi.server.hostname", ownIp);
+            Registry registry = LocateRegistry.getRegistry(ipServer, 1099);
             ServerInterface server = (ServerInterface) registry.lookup("server");
             ManagerClient2 mClient = new ManagerClient2();
             server.subscribeManager(mClient.getClientId(), mClient);
@@ -120,6 +127,7 @@ public class ManagerClient2 extends UnicastRemoteObject implements ManagerClient
                         break;
                     case "6":
                         server.managerOption6(mClient);
+                        break;
                     case "7":
                         server.managerOption7(mClient);
                         break;

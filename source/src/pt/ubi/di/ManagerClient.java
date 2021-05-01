@@ -17,7 +17,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
 
     public ManagerClient() throws RemoteException {
         super();
-        id = "Caio 2";
+        id = "Caio";
     }
 
     public void printOnClient(String s) throws RemoteException {

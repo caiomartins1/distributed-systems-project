@@ -43,6 +43,10 @@ public class AdvanceReceipt implements Serializable {
         return totalCost;
     }
 
+    public String getTimeOfPurchase() {
+        return "Date: " + timeOfPurchase.getYear() +"/"+ timeOfPurchase.getMonth() +"/"+ timeOfPurchase.getDayOfMonth() +" "+ timeOfPurchase.getHour() +":"+ timeOfPurchase.getMinute();
+    }
+
     public String getWhoFor() {
         return whoFor;
     }
@@ -61,7 +65,7 @@ public class AdvanceReceipt implements Serializable {
         }
         return ("\n__________________ PRINTING " + whoFor +  " NAME: " + name + "__________________\n"
                 + "RECEIPT ID: " + id + "\n"
-                + "Date: " + timeOfPurchase.getYear() +"/"+ timeOfPurchase.getMonth() +"/"+ timeOfPurchase.getDayOfMonth() +"  "+ timeOfPurchase.getHour() +":"+ timeOfPurchase.getMinute() + "\n"
+                + "Date: " + timeOfPurchase.getYear() +"/"+ timeOfPurchase.getMonth() +"/"+ timeOfPurchase.getDayOfMonth() +" "+ timeOfPurchase.getHour() +":"+ timeOfPurchase.getMinute() + "\n"
                 + note + "\n"
                 + "Total cost=" + totalCost + "\n"
                 + "__________________ END OF RECEIPT __________________\n");

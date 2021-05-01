@@ -113,13 +113,17 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     client.printOnClient("Type quantity: ");
                     quantity = client.readIntClient();
                     if (quantity > 0) {
-                        AdvanceReceipt advSlip=buyingService.buySingleOrder(new Order(p, quantity), client.getClientId());
-                        storeBalance=storeBalance-advSlip.getTotalCost();
+                        AdvanceReceipt advSlip = buyingService.buySingleOrder(new Order(p, quantity), client.getClientId());
+                        storeBalance = storeBalance - advSlip.getTotalCost();
                         client.printOnClient("---- Purchase made ----");
-                        client.printOnClientNoNL("---- Checking order");Thread.sleep(400);
-                        client.printOnClientNoNL(".");Thread.sleep(400);
-                        client.printOnClientNoNL(".");Thread.sleep(400);
-                        client.printOnClientNoNL(".");Thread.sleep(400);
+                        client.printOnClientNoNL("---- Checking order");
+                        Thread.sleep(400);
+                        client.printOnClientNoNL(".");
+                        Thread.sleep(400);
+                        client.printOnClientNoNL(".");
+                        Thread.sleep(400);
+                        client.printOnClientNoNL(".");
+                        Thread.sleep(400);
                         client.printOnClientNoNL(". ----\n");
                         client.printOnClient("---- Success!!!! ----\n" + advSlip.toString());
                         System.out.println("*** Manager " + client.getClientId() + " Added " + quantity + " items to " + p.getType() + " stock ***");
@@ -189,11 +193,15 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     client.printOnClient(value.getPart().toStringClean());
                 }
                 AdvanceReceipt advSlip = buyingService.buyOrder(orders, client.getClientId());
-                storeBalance=storeBalance-advSlip.getTotalCost();
-                client.printOnClientNoNL("---- Checking order");Thread.sleep(400);
-                client.printOnClientNoNL(".");Thread.sleep(400);
-                client.printOnClientNoNL(".");Thread.sleep(400);
-                client.printOnClientNoNL(".");Thread.sleep(400);
+                storeBalance = storeBalance - advSlip.getTotalCost();
+                client.printOnClientNoNL("---- Checking order");
+                Thread.sleep(400);
+                client.printOnClientNoNL(".");
+                Thread.sleep(400);
+                client.printOnClientNoNL(".");
+                Thread.sleep(400);
+                client.printOnClientNoNL(".");
+                Thread.sleep(400);
                 client.printOnClientNoNL(". ----\n");
                 client.printOnClient("---- Success!!!! ----\n" + advSlip.toString());
                 System.out.println("*** Manager " + client.getClientId() + " made a purchase ***");
@@ -320,15 +328,14 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
         try {
             managerClient.printOnClient("------------ Store Balance ------------");
-            for(AdvanceReceipt advSlip : history){
-                if(advSlip.getWhoFor().equals(buyingService.getWhoFor())) {
-                    managerClient.printOnClient("------------: -"+advSlip.getTotalCost() + " From: " + advSlip.getName());
-                }
-                else{
-                    managerClient.printOnClient("------------: +"+advSlip.getTotalCost() + " From: " + advSlip.getName());
+            for (AdvanceReceipt advSlip : history) {
+                if (advSlip.getWhoFor().equals(buyingService.getWhoFor())) {
+                    managerClient.printOnClient("------------: -" + advSlip.getTotalCost() + " From: " + advSlip.getName() + " " + advSlip.getTimeOfPurchase());
+                } else {
+                    managerClient.printOnClient("------------: +" + advSlip.getTotalCost() + " From: " + advSlip.getName() + " " + advSlip.getTimeOfPurchase());
                 }
             }
-            managerClient.printOnClient("StoreBalance: "+storeBalance);
+            managerClient.printOnClient("StoreBalance: " + storeBalance);
             managerClient.printOnClient("------------ -------------- ------------");
         } catch (RemoteException e) {
             System.out.println("Error balance" + e.getMessage());
@@ -388,11 +395,15 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     buyerClient.printOnClient(value.getPart().toStringClean());
                 }
                 AdvanceReceipt advSlip = sellingService.sellOrder(orders, buyerClient.getClientId());
-                storeBalance=storeBalance+advSlip.getTotalCost();
-                buyerClient.printOnClientNoNL("---- Checking order");Thread.sleep(400);
-                buyerClient.printOnClientNoNL(".");Thread.sleep(400);
-                buyerClient.printOnClientNoNL(".");Thread.sleep(400);
-                buyerClient.printOnClientNoNL(".");Thread.sleep(400);
+                storeBalance = storeBalance + advSlip.getTotalCost();
+                buyerClient.printOnClientNoNL("---- Checking order");
+                Thread.sleep(400);
+                buyerClient.printOnClientNoNL(".");
+                Thread.sleep(400);
+                buyerClient.printOnClientNoNL(".");
+                Thread.sleep(400);
+                buyerClient.printOnClientNoNL(".");
+                Thread.sleep(400);
                 buyerClient.printOnClientNoNL(". ----\n");
                 buyerClient.printOnClient("---- Success!!!! ----\n" + advSlip.toString());
                 System.out.println("*** Buyer " + buyerClient.getClientId() + " made a purchase ***");

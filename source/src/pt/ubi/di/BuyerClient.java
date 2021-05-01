@@ -16,7 +16,7 @@ public class BuyerClient extends UnicastRemoteObject implements BuyerClientInter
 
     public BuyerClient() throws RemoteException {
         super();
-        this.id = "Marcos";
+        this.id = "Junior";
     }
 
     public void printOnClient(String s) throws RemoteException {
@@ -49,16 +49,16 @@ public class BuyerClient extends UnicastRemoteObject implements BuyerClientInter
 
         try {
             String ownIp = ShowInterfaces.getIp();
-            System.out.println("Own ip is: "+ownIp);
+            System.out.println("Own ip is: " + ownIp);
 
             System.out.print("Type Server ip: ");
             String ipServer = ReadUtils.readString();
-            if(ipServer.equals("")){
+            if (ipServer.equals("")) {
                 ipServer = ownIp;
             }
 
-            System.setProperty("java.rmi.server.hostname",ownIp);
-            Registry registry = LocateRegistry.getRegistry(ipServer,1099);
+            System.setProperty("java.rmi.server.hostname", ownIp);
+            Registry registry = LocateRegistry.getRegistry(ipServer, 1099);
             ServerInterface server = (ServerInterface) registry.lookup("server");
             BuyerClient bClient = new BuyerClient();
             server.subscribeBuyer(bClient.getClientId(), bClient);
