@@ -3,6 +3,7 @@ package pt.ubi.di;
 import pt.ubi.di.interfaces.BuyerClientInterface;
 import pt.ubi.di.interfaces.ServerInterface;
 import pt.ubi.di.utils.ReadUtils;
+import pt.ubi.di.utils.ShowInterfaces;
 
 import java.rmi.Naming;
 import java.rmi.Remote;
@@ -49,8 +50,12 @@ public class BuyerClient extends UnicastRemoteObject implements BuyerClientInter
         System.setSecurityManager(new SecurityManager());
 
         try {
-
-            Registry registry = LocateRegistry.getRegistry(1099);
+            System.out.print("Type Server ip: ");
+            String ipServer = ReadUtils.readString();
+            String ownIp = ShowInterfaces.getIp();
+            System.out.println("Own ip is: "+ownIp);
+            System.setProperty("java.rmi.server.hostname",ownIp);
+            Registry registry = LocateRegistry.getRegistry(ipServer,1099);
             ServerInterface server = (ServerInterface) registry.lookup("server");
             BuyerClient bClient = new BuyerClient();
             server.subscribeBuyer(bClient.getClientId(), bClient);
