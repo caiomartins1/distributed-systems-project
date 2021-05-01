@@ -54,7 +54,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
         System.out.print("Enter Part minimum stock: ");
         int minStock = ReadUtils.readInt();
 
-        boolean isInfoValid = !type.isEmpty() && (buyPrice > 0) && (sellPrice > 0) && (minStock > 0);
+        boolean isInfoValid = !type.isEmpty() && (buyPrice > 0) && (sellPrice > 0) && (minStock >= 0);
 
         if (!isInfoValid) {
             System.out.println("Part not created -> Invalid Input");

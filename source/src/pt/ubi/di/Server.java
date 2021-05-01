@@ -45,16 +45,17 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     }
 
     public void subscribeManager(String name, ManagerClientInterface client) {
-        System.out.println("Subscribing " + name + " Manager");
+        System.out.println("*** Subscribing Manager " + name + " ***");
         mClients.add(client);
     }
 
     public void subscribeBuyer(String name, BuyerClientInterface client) {
-        System.out.println("Subscribing " + name + " Buyer");
+        System.out.println("*** Subscribing Buyer " + name + " ***");
         bClients.add(client);
     }
 
     private void outOfStockCallback(Part p) throws RemoteException {
+        System.out.println("Notifying Managers \"" + p.getType() + "\" is out of stock...");
         for (ManagerClientInterface mClient : mClients) {
             mClient.printOnClient("\n*** Warning " +
                     mClient.getClientId() + " ***\n" +
@@ -69,8 +70,6 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         buyingService.setPurchaseHistory(FileUtils.retrievePurchaseHistory());
         sellingService.setSellHistory(FileUtils.retrieveSalesHistory());
         System.out.println("Loading data...");
-        // TODO: Remove debug log
-        System.out.println(parts.toString());
     }
 
     public void managerOption1(ManagerClientInterface client, Part p) throws RemoteException {
