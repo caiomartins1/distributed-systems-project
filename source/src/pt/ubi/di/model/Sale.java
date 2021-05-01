@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Sale {
 
     ArrayList<AdvanceReceipt> sellHistory;
-    ArrayList<String> tempItems;
+    ArrayList<Item> tempItems;
     ArrayList<Receipt> receipts;
 
     /**
@@ -16,6 +16,10 @@ public class Sale {
         sellHistory = new ArrayList<>(); // always persistent
         tempItems = new ArrayList<>(); // reset at every part order
         receipts = new ArrayList<>(); // reset at every set of orders
+    }
+
+    public void setSellHistory(ArrayList<AdvanceReceipt> sellHistory) {
+        this.sellHistory = sellHistory;
     }
 
     /**
@@ -42,12 +46,12 @@ public class Sale {
      * @param orders list of orders(part,quantity)
      * @return advanceReceipt
      */
-    public AdvanceReceipt sellOrder(ArrayList<Order> orders) {
+    public AdvanceReceipt sellOrder(ArrayList<Order> orders, String name) {
         receipts.clear();
         for (Order order : orders) {
             receipts.add(sellingSinglePart(order.getQuantity(), order.getPart()));
         }
-        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts, "BUYING(from store)");
+        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts, "BUYING(from store)",name);
         sellHistory.add(advanceReceipt);
         return advanceReceipt;
     }
@@ -58,15 +62,20 @@ public class Sale {
      * @param order a part and its quantity
      * @return advanceReceipt
      */
-    public AdvanceReceipt sellSingleOrder(Order order) {
+    public AdvanceReceipt sellSingleOrder(Order order,String name) {
         receipts.clear();
         receipts.add(sellingSinglePart(order.getQuantity(), order.getPart()));
-        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts, "BUYING(from store)");
+        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts, "BUYING(from store)",name);
         sellHistory.add(advanceReceipt);
         return advanceReceipt;
     }
 
     public ArrayList<AdvanceReceipt> getSellHistory() {
         return sellHistory;
+    }
+
+    @Override
+    public String toString() {
+        return sellHistory.toString();
     }
 }

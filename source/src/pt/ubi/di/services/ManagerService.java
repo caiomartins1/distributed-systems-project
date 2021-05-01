@@ -11,12 +11,10 @@ public class ManagerService {
 
     public void registerPart(ArrayList<Part> parts, Part p) {
         parts.add(p);
-        FileUtils.saveParts(parts);
     }
 
     public void deletePart(ArrayList<Part> parts, int index) {
         parts.remove(index);
-        FileUtils.saveParts(parts);
     }
 
     public String listByTypeAlpha(ArrayList<Part> p) {

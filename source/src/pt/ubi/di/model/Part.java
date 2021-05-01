@@ -13,16 +13,16 @@ public class Part implements Serializable {
     Float sellPrice;
     int minStock;
     int stock;
+    private ArrayList<Item> items;
 
-    public ArrayList<String> getItems() {
+
+    public ArrayList<Item> getItems() {
         return items;
     }
 
-    public void setItems(ArrayList<String> items) {
+    public void setItems(ArrayList<Item> items) {
         this.items = items;
     }
-
-    private ArrayList<String> items;
 
     public Part(String type, Float buyPrice, Float sellPrice, int minStock) {
         this.id = UUID.randomUUID().toString();
@@ -33,8 +33,8 @@ public class Part implements Serializable {
         items = new ArrayList<>();
     }
 
-    public ArrayList<String> removeStock(int quantity) {
-        ArrayList<String> tempItems = new ArrayList<>();
+    public ArrayList<Item> removeStock(int quantity) {
+        ArrayList<Item> tempItems = new ArrayList<>();
         for (int i = 0; i < quantity; i++) {
             stock = stock - 1;
             tempItems.add(items.remove(0));
@@ -42,7 +42,7 @@ public class Part implements Serializable {
         return tempItems;
     }
 
-    public String removeStock() {
+    public Item removeStock() {
         stock = stock - 1;
         return items.remove(0);
     }
@@ -50,15 +50,15 @@ public class Part implements Serializable {
     public void addStock(int quantity) {
         for (int i = 0; i < quantity; ++i) {
             stock = stock + 1;
-            items.add(UUID.randomUUID().toString());
+            items.add(new Item(UUID.randomUUID().toString()));
         }
     }
 
-    public String addStock() {
-            String id = UUID.randomUUID().toString();
+    public Item addStock() {
+            Item i=new Item(UUID.randomUUID().toString());
             stock = stock + 1;
-            items.add(id);
-        return id;
+            items.add(i);
+        return i;
     }
 
     public int getStock() {

@@ -1,18 +1,19 @@
 package pt.ubi.di.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Receipt {
+public class Receipt implements Serializable {
 
     String id;
     String type;
     float price;
     float costItem;
     int quantity;
-    ArrayList<String> items;
+    ArrayList<Item> items;
 
 
-    public Receipt(String id, String type, float price, float costItem, int quantity, ArrayList<String> items) {
+    public Receipt(String id, String type, float price, float costItem, int quantity, ArrayList<Item> items) {
         this.id = id;
         this.type = type;
         this.price = price;
@@ -47,9 +48,9 @@ public class Receipt {
 
     public String toStringReceipt(boolean printItem) {
         if(printItem)
-            return "type=" + type + " costPerItem=" + costItem + " quantity=" + quantity + " costPerItem*quantity=priceTotal=" + price + "\nitems=" + items;
+            return "type=" + type + " costPerItem=" + costItem + " quantity=" + quantity + " price=" + price + "\nitems=" + items;
         else
-            return "type=" + type + " costPerItem=" + costItem + " quantity=" + quantity + " costPerItem*quantity=priceTotal=" + price;
+            return "type=" + type + " costPerItem=" + costItem + " quantity=" + quantity + " price=" + price;
     }
 
     public String toString(boolean printItems) {

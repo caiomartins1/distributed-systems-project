@@ -75,7 +75,7 @@ public class BuyerClient2 extends UnicastRemoteObject implements BuyerClientInte
                         server.buyerOption2(bClient);
                         break;
                     case "3":
-                        System.out.println("3");
+                        server.buyerOption3(bClient);
                         break;
                     case "0":
                         System.out.println("Exiting...");

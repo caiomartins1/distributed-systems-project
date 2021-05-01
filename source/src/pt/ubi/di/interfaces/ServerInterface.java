@@ -14,8 +14,10 @@ public interface ServerInterface extends Remote {
     public void managerOption3(ManagerClientInterface client) throws RemoteException;
     public void managerOption4(ManagerClientInterface client) throws RemoteException;
     public void managerOption5(ManagerClientInterface client) throws RemoteException;
+    public void managerOption6(ManagerClientInterface client) throws RemoteException;
 
     public void buyerOption1(BuyerClientInterface client) throws RemoteException;
     public void buyerOption2(BuyerClientInterface client) throws RemoteException;
+    public void buyerOption3(BuyerClientInterface client) throws RemoteException;
 
 }

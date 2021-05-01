@@ -10,6 +10,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.UUID;
 
 public class BuyerClient extends UnicastRemoteObject implements BuyerClientInterface {
     private String id;
@@ -77,7 +78,7 @@ public class BuyerClient extends UnicastRemoteObject implements BuyerClientInter
                         server.buyerOption2(bClient);
                         break;
                     case "3":
-                        System.out.println("3");
+                        server.buyerOption3(bClient);
                         break;
                     case "0":
                         System.out.println("Exiting...");

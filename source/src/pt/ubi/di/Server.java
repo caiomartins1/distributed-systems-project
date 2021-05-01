@@ -17,14 +17,10 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-// TODO: 0 -> format receipt print
 // TODO: 0 -> format IDs
 // TODO: 2 -> Store balance
 // TODO: 3 -> Remote Setup
-// TODO: 4 -> Add date to receipt and part
-// TODO: 4 -> add name to receipt
-// TODO: 5 -> change arraylist of string to array list of items (receipts, Part...)
-// TODO: 5 -> Validate prod name
+// TODO: 4 -> Add date to part
 // TODO: 5 -> Write Receipts
 // TODO: 5 -> make sure stock are written
 // TODO: 5 -> check all listings client and manager;
@@ -66,6 +62,8 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
     private void loadData() {
         parts = FileUtils.retrieveParts();
+        buyingService.setPurchaseHistory(FileUtils.retrievePurchaseHistory());
+        sellingService.setSellHistory(FileUtils.retrieveSalesHistory());
         System.out.println("Loading data...");
         // TODO: Remove debug log
         System.out.println(parts.toString());
@@ -86,19 +84,21 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     client.printOnClient("Type quantity: ");
                     quantity = client.readIntClient();
                     if (quantity > 0) {
-                        buyingService.buySingleOrder(new Order(p, quantity));
-                        client.printOnClient("Purchase made");
+                        buyingService.buySingleOrder(new Order(p, quantity),client.getClientId());
+                        client.printOnClient("---- Purchase made ----");
                     } else {
                         client.printOnClient("____Wrong value____");
                     }
                 } while (quantity <= 0);
             } else {
-                System.out.println("No purchase made for part");
+                System.out.println("____ No purchase made for part ____");
             }
         } catch (Exception e) {
             System.out.println("Error adding stock: " + e);
         }
-        client.printOnClient("\nPart \"" + p.getType() + "\" added with success");
+        client.printOnClient("\n---- Part \"" + p.getType() + "\" added with success ----");
+        FileUtils.saveParts(parts);
+        FileUtils.savePurchaseHistory(buyingService.getPurchaseHistory());
     }
 
     public void managerOption2(ManagerClientInterface client) throws RemoteException {
@@ -120,7 +120,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 client.printOnClient("____Order canceled____");
                 return;
             } else if (option == -2) {
-                client.printOnClient("Confirming Order.....");
+                client.printOnClient("---- Confirming Order..... ----");
                 eval = false;
 
             } else {
@@ -147,8 +147,8 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 for (Order value : orders) {
                     client.printOnClient(value.getPart().toStringClean());
                 }
-                AdvanceReceipt advSlip = buyingService.buyOrder(orders);
-                client.printOnClientNoNL("Checking order");
+                AdvanceReceipt advSlip = buyingService.buyOrder(orders,client.getClientId());
+                client.printOnClientNoNL("---- Checking order");
                 Thread.sleep(500);
                 client.printOnClientNoNL(".");
                 Thread.sleep(500);
@@ -156,18 +156,20 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 Thread.sleep(500);
                 client.printOnClientNoNL(".");
                 Thread.sleep(500);
-                client.printOnClientNoNL(".\n");
+                client.printOnClientNoNL(". ----\n");
                 client.printOnClient("---- Success!!!! ----\n" + advSlip.toString());
             } catch (Exception e) {
                 System.out.println("ERROR on Thread: " + e.getMessage());
             }
         }
+        FileUtils.saveParts(parts);
+        FileUtils.savePurchaseHistory(buyingService.getPurchaseHistory());
     }
 
     public void managerOption3(ManagerClientInterface managerClient) throws RemoteException {
 
         if (parts.size() == 0) {
-            managerClient.printOnClient("No part registered yet!");
+            managerClient.printOnClient("____ No part registered yet! ____");
             return;
         }
         managerClient.printOnClient("Available products to remove: ");
@@ -181,7 +183,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
 
         if (itemToDelete < 1 || itemToDelete > parts.size()) {
-            managerClient.printOnClient("Invalid Input");
+            managerClient.printOnClient("____ Invalid Input ____");
             return;
         }
 
@@ -191,16 +193,16 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         switch (confirmation) {
             case "y":
                 mService.deletePart(parts, itemToDelete - 1);
-                managerClient.printOnClient("Item removed with success");
+                managerClient.printOnClient("---- Item removed with success ----");
                 break;
             case "n":
-                managerClient.printOnClient("Action canceled");
+                managerClient.printOnClient("____ Action canceled ____");
                 break;
             default:
-                managerClient.printOnClient("Invalid input");
+                managerClient.printOnClient("____ Invalid input ____");
                 break;
         }
-
+        FileUtils.saveParts(parts);
     }
 
     public void managerOption4(ManagerClientInterface managerClient) throws RemoteException {
@@ -230,16 +232,34 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 break;
 
             default:
-                managerClient.printOnClient("Invalid option!");
+                managerClient.printOnClient("____ Invalid option! ____");
                 break;
         }
     }
 
     public void managerOption5(ManagerClientInterface managerClient) {
         try {
+            if(buyingService.getPurchaseHistory().isEmpty()) {
+                managerClient.printOnClient("____ No purchases to show ____");
+                return;
+            }
+
             managerClient.printOnClient(buyingService.getPurchaseHistory().toString());
         } catch (Exception e) {
             System.out.println("Error printing purchase history" + e.getMessage());
+        }
+    }
+
+    public void managerOption6(ManagerClientInterface managerClient) {
+        try {
+            if(sellingService.getSellHistory().isEmpty()) {
+                managerClient.printOnClient("____ No sales to show ____");
+                return;
+            }
+
+            managerClient.printOnClient(sellingService.getSellHistory().toString());
+        } catch (Exception e) {
+            System.out.println("Error printing sales history" + e.getMessage());
         }
     }
 
@@ -265,7 +285,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 buyerClient.printOnClient("Confirming Order.....");
                 eval = false;
             } else {
-                if (0 <= option && option < parts.size()) {
+                if (0 <= option && option <= parts.size()) {
                     buyerClient.printOnClientNoNL("Product: " + parts.get(option).getType() + " -> type quantity:");
                     int quantity = buyerClient.readIntClient();
                     Part part = parts.get(option);
@@ -292,7 +312,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 for (Order value : orders) {
                     buyerClient.printOnClient(value.getPart().toStringClean());
                 }
-                AdvanceReceipt advSlip = sellingService.sellOrder(orders);
+                AdvanceReceipt advSlip = sellingService.sellOrder(orders,buyerClient.getClientId());
                 buyerClient.printOnClientNoNL("Checking order");
                 Thread.sleep(500);
                 buyerClient.printOnClientNoNL(".");
@@ -301,12 +321,14 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 Thread.sleep(500);
                 buyerClient.printOnClientNoNL(".");
                 Thread.sleep(500);
-                buyerClient.printOnClientNoNL(".\n");
+                buyerClient.printOnClientNoNL(". ----\n");
                 buyerClient.printOnClient("---- Success!!!! ----\n" + advSlip.toString());
             } catch (Exception e) {
                 System.out.println("ERROR on Thread: " + e.getMessage());
             }
         }
+        FileUtils.saveParts(parts);
+        FileUtils.saveSalesHistory(sellingService.getSellHistory());
     }
 
     public void buyerOption2(BuyerClientInterface buyerClient) throws RemoteException {
@@ -336,8 +358,24 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 break;
 
             default:
-                buyerClient.printOnClient("Invalid option!");
+                buyerClient.printOnClient("____ Invalid option! ____");
                 break;
+        }
+    }
+
+    public void buyerOption3(BuyerClientInterface buyerClient) throws RemoteException {
+        try {
+            if(sellingService.getSellHistory().isEmpty()){
+                buyerClient.printOnClient("____ No purchases to show ____");
+                return;
+            }
+            for(AdvanceReceipt advSlip : sellingService.getSellHistory()){
+                if (buyerClient.getClientId().equals(advSlip.getName())){
+                    buyerClient.printOnClient(advSlip.toString());
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error printing sales history" + e.getMessage());
         }
     }
 
