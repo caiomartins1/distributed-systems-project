@@ -56,7 +56,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     }
 
     private void outOfStockCallback(Part p) throws RemoteException {
-        System.out.println("Notifying Managers \"" + p.getType() + "\" is out of stock...");
+        System.out.println("*** Notifying Managers \"" + p.getType() + "\" is out of stock... ***");
         for (ManagerClientInterface mClient : mClients) {
             mClient.printOnClient("\n*** Warning " +
                     mClient.getClientId() + " ***\n" +
@@ -296,6 +296,11 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     }
 
 
+    public void buyerOption0(BuyerClientInterface buyerClient) throws RemoteException {
+        System.out.println("*** Buyer " + buyerClient.getClientId() + " disconnected from Server ***");
+        bClients.remove(buyerClient);
+    }
+
     public void buyerOption1(BuyerClientInterface buyerClient) throws RemoteException {
 
         buyerClient.printOnClient("---- Buying from Store ----");
@@ -355,6 +360,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 Thread.sleep(500);
                 buyerClient.printOnClientNoNL(". ----\n");
                 buyerClient.printOnClient("---- Success!!!! ----\n" + advSlip.toString());
+                System.out.println("*** Buyer " + buyerClient.getClientId() + " made a purchase ***");
 
                 for (Order order : orders) {
                     if (order.getPart().getStock() < order.getPart().getMinStock()) {
