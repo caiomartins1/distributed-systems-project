@@ -71,6 +71,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         parts = FileUtils.retrieveParts();
         buyingService.setPurchaseHistory(FileUtils.retrievePurchaseHistory());
         sellingService.setSellHistory(FileUtils.retrieveSalesHistory());
+        storeBalance = FileUtils.retrieveStoreBalance();
         System.out.println("Loading data...");
     }
 
@@ -106,25 +107,32 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     client.printOnClient("Type quantity: ");
                     quantity = client.readIntClient();
                     if (quantity > 0) {
-                        buyingService.buySingleOrder(new Order(p, quantity), client.getClientId());
+                        AdvanceReceipt advSlip=buyingService.buySingleOrder(new Order(p, quantity), client.getClientId());
+                        storeBalance=storeBalance-advSlip.getTotalCost();
                         client.printOnClient("---- Purchase made ----");
+                        client.printOnClientNoNL("---- Checking order");Thread.sleep(400);
+                        client.printOnClientNoNL(".");Thread.sleep(400);
+                        client.printOnClientNoNL(".");Thread.sleep(400);
+                        client.printOnClientNoNL(".");Thread.sleep(400);
+                        client.printOnClientNoNL(". ----\n");
+                        client.printOnClient("---- Success!!!! ----\n" + advSlip.toString());
                         System.out.println("*** Manager " + client.getClientId() + " Added " + quantity + " items to " + p.getType() + " stock ***");
                     } else {
                         client.printOnClient("____Wrong value____");
                     }
                 } while (quantity <= 0);
             } else {
-                System.out.println("____ No purchase made for part ____");
+                client.printOnClient("____ No purchase made for part ____");
             }
 
             if (p.getStock() < p.getMinStock()) {
                 outOfStockCallback(p);
             }
-
         } catch (Exception e) {
             System.out.println("Error adding stock: " + e);
         }
 
+        FileUtils.saveStoreBalance(storeBalance);
         FileUtils.saveParts(parts);
         FileUtils.savePurchaseHistory(buyingService.getPurchaseHistory());
     }
@@ -148,7 +156,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 client.printOnClient("____Order canceled____");
                 return;
             } else if (option == -2) {
-                client.printOnClient("---- Confirming Order..... ----");
+                client.printOnClient("---- Confirming Order ----");
                 eval = false;
 
             } else {
@@ -176,20 +184,18 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     client.printOnClient(value.getPart().toStringClean());
                 }
                 AdvanceReceipt advSlip = buyingService.buyOrder(orders, client.getClientId());
-                client.printOnClientNoNL("---- Checking order");
-                Thread.sleep(500);
-                client.printOnClientNoNL(".");
-                Thread.sleep(500);
-                client.printOnClientNoNL(".");
-                Thread.sleep(500);
-                client.printOnClientNoNL(".");
-                Thread.sleep(500);
+                storeBalance=storeBalance-advSlip.getTotalCost();
+                client.printOnClientNoNL("---- Checking order");Thread.sleep(400);
+                client.printOnClientNoNL(".");Thread.sleep(400);
+                client.printOnClientNoNL(".");Thread.sleep(400);
+                client.printOnClientNoNL(".");Thread.sleep(400);
                 client.printOnClientNoNL(". ----\n");
                 client.printOnClient("---- Success!!!! ----\n" + advSlip.toString());
             } catch (Exception e) {
                 System.out.println("ERROR on Thread: " + e.getMessage());
             }
         }
+        FileUtils.saveStoreBalance(storeBalance);
         FileUtils.saveParts(parts);
         FileUtils.savePurchaseHistory(buyingService.getPurchaseHistory());
     }
@@ -300,6 +306,28 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         }
     }
 
+    public void managerOption7(ManagerClientInterface managerClient) {
+
+        ArrayList<AdvanceReceipt> history = new ArrayList<>();
+        history.addAll(buyingService.getPurchaseHistory());
+        history.addAll(sellingService.getSellHistory());
+
+        try {
+            managerClient.printOnClient("------------ Store Balance ------------");
+            for(AdvanceReceipt advSlip : history){
+                if(advSlip.getWhoFor().equals(buyingService.getWhoFor())) {
+                    managerClient.printOnClient("------------: -"+advSlip.getTotalCost() + " From: " + advSlip.getName());
+                }
+                else{
+                    managerClient.printOnClient("------------: +"+advSlip.getTotalCost() + " From: " + advSlip.getName());
+                }
+            }
+            managerClient.printOnClient("StoreBalance: "+storeBalance);
+            managerClient.printOnClient("------------ -------------- ------------");
+        } catch (RemoteException e) {
+            System.out.println("Error balance" + e.getMessage());
+        }
+    }
 
     public void buyerOption0(BuyerClientInterface buyerClient) throws RemoteException {
         System.out.println("*** Buyer " + buyerClient.getClientId() + " disconnected from Server ***");
@@ -324,7 +352,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 buyerClient.printOnClient("____Order canceled____");
                 return;
             } else if (option == -2) {
-                buyerClient.printOnClient("Confirming Order.....");
+                buyerClient.printOnClient("---- Confirming Order ----");
                 eval = false;
             } else {
                 if (0 <= option && option < parts.size()) {
@@ -355,14 +383,11 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     buyerClient.printOnClient(value.getPart().toStringClean());
                 }
                 AdvanceReceipt advSlip = sellingService.sellOrder(orders, buyerClient.getClientId());
-                buyerClient.printOnClientNoNL("Checking order");
-                Thread.sleep(500);
-                buyerClient.printOnClientNoNL(".");
-                Thread.sleep(500);
-                buyerClient.printOnClientNoNL(".");
-                Thread.sleep(500);
-                buyerClient.printOnClientNoNL(".");
-                Thread.sleep(500);
+                storeBalance=storeBalance+advSlip.getTotalCost();
+                buyerClient.printOnClientNoNL("---- Checking order");Thread.sleep(400);
+                buyerClient.printOnClientNoNL(".");Thread.sleep(400);
+                buyerClient.printOnClientNoNL(".");Thread.sleep(400);
+                buyerClient.printOnClientNoNL(".");Thread.sleep(400);
                 buyerClient.printOnClientNoNL(". ----\n");
                 buyerClient.printOnClient("---- Success!!!! ----\n" + advSlip.toString());
                 System.out.println("*** Buyer " + buyerClient.getClientId() + " made a purchase ***");
@@ -376,6 +401,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 System.out.println("ERROR on Thread: " + e.getMessage());
             }
         }
+        FileUtils.saveStoreBalance(storeBalance);
         FileUtils.saveParts(parts);
         FileUtils.saveSalesHistory(sellingService.getSellHistory());
     }

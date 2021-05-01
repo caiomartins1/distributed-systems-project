@@ -50,10 +50,15 @@ public class BuyerClient extends UnicastRemoteObject implements BuyerClientInter
         System.setSecurityManager(new SecurityManager());
 
         try {
-            System.out.print("Type Server ip: ");
-            String ipServer = ReadUtils.readString();
             String ownIp = ShowInterfaces.getIp();
             System.out.println("Own ip is: "+ownIp);
+
+            System.out.print("Type Server ip: ");
+            String ipServer = ReadUtils.readString();
+            if(ipServer.equals("")){
+                ipServer = ownIp;
+            }
+
             System.setProperty("java.rmi.server.hostname",ownIp);
             Registry registry = LocateRegistry.getRegistry(ipServer,1099);
             ServerInterface server = (ServerInterface) registry.lookup("server");

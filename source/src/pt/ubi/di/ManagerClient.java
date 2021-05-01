@@ -75,10 +75,15 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
         System.setSecurityManager(new SecurityManager());
 
         try {
-            System.out.print("Type Server ip: ");
-            String ipServer = ReadUtils.readString();
             String ownIp = ShowInterfaces.getIp();
             System.out.println("Own ip is: "+ownIp);
+
+            System.out.print("Type Server ip: ");
+            String ipServer = ReadUtils.readString();
+            if(ipServer.equals("")){
+                ipServer = ownIp;
+            }
+
             System.setProperty("java.rmi.server.hostname",ownIp);
             Registry registry=LocateRegistry.getRegistry(ipServer,1099);
             ServerInterface server = (ServerInterface) registry.lookup("server");
@@ -97,6 +102,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
                                 "4. List existing parts\n" +
                                 "5. List purchases to suppliers\n" + // DONE -> maybe formatting improve (vitor)
                                 "6. List sells\n" + // DOING (vitor)
+                                "7. Store balance\n" +
                                 "0. Exit\n" + // DONE
                                 "Your action:"
                 );
@@ -121,6 +127,9 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
                         break;
                     case "6":
                         server.managerOption6(mClient);
+                        break;
+                    case "7":
+                        server.managerOption7(mClient);
                         break;
                     case "0":
                         server.managerOption0(mClient);

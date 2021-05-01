@@ -1,5 +1,6 @@
 package pt.ubi.di.services;
 
+import pt.ubi.di.model.AdvanceReceipt;
 import pt.ubi.di.model.Part;
 import pt.ubi.di.utils.FileUtils;
 
@@ -116,6 +117,27 @@ public class ManagerService {
 
             for (Part part : p) {
                 s += part.beautifyOutput() + "\n";
+            }
+        }
+
+        return s;
+    }
+
+    public String listByDateHistory(ArrayList<AdvanceReceipt> receiptHistory) {
+        String s = "";
+
+        if (receiptHistory.isEmpty()) {
+            s = "No history!";
+        } else {
+            Collections.sort(receiptHistory, new Comparator<AdvanceReceipt>() {
+                @Override
+                public int compare(AdvanceReceipt s1, AdvanceReceipt s2) {
+                    return s1.getCreatedAt().isAfter(s2.getCreatedAt()) ? -1 : 1;
+                }
+            });
+
+            for (AdvanceReceipt advSlip : receiptHistory) {
+                s += receiptHistory.toString();
             }
         }
 
