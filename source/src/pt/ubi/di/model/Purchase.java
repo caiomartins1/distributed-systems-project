@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Purchase {
 
     ArrayList<AdvanceReceipt> purchaseHistory;
-    ArrayList<String> tempItems;
+    ArrayList<Item> tempItems;
     ArrayList<Receipt> receipts;
 
     /**
@@ -20,6 +20,10 @@ public class Purchase {
         purchaseHistory = new ArrayList<>(); // always persistent
         tempItems = new ArrayList<>(); // reset at every part order
         receipts = new ArrayList<>(); // reset at every set of orders
+    }
+
+    public void setPurchaseHistory(ArrayList<AdvanceReceipt> purchaseHistory) {
+        this.purchaseHistory = purchaseHistory;
     }
 
     /**
@@ -46,12 +50,12 @@ public class Purchase {
      * @param orders list of orders(part,quantity)
      * @return advanceReceipt
      */
-    public AdvanceReceipt buyOrder(ArrayList<Order> orders) {
+    public AdvanceReceipt buyOrder(ArrayList<Order> orders,String name) {
         receipts.clear();
         for (Order order : orders) {
             receipts.add(buySinglePart(order.getQuantity(), order.getPart()));
         }
-        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts, "BUYING(From supplier)");
+        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts, "BUYING(From supplier)",name);
         purchaseHistory.add(advanceReceipt);
         return advanceReceipt;
     }
@@ -62,15 +66,20 @@ public class Purchase {
      * @param order a part and its quantity
      * @return advanceReceipt
      */
-    public AdvanceReceipt buySingleOrder(Order order) {
+    public AdvanceReceipt buySingleOrder(Order order, String name) {
         receipts.clear();
         receipts.add(buySinglePart(order.getQuantity(), order.getPart()));
-        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts, "BUYING(from supplier)");
+        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts, "BUYING(from supplier)",name);
         purchaseHistory.add(advanceReceipt);
         return advanceReceipt;
     }
 
     public ArrayList<AdvanceReceipt> getPurchaseHistory() {
         return purchaseHistory;
+    }
+
+    @Override
+    public String toString() {
+        return purchaseHistory.toString();
     }
 }
