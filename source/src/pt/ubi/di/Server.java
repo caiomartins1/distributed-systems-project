@@ -73,6 +73,11 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         System.out.println("Loading data...");
     }
 
+    public void managerOption0(ManagerClientInterface client) throws RemoteException {
+        System.out.println("*** Manager " + client.getClientId() + " disconnected from Server ***");
+        mClients.remove(client);
+    }
+
     public void managerOption1(ManagerClientInterface client, Part p) throws RemoteException {
 
         if (p == null) {
