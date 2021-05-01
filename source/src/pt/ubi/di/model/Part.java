@@ -3,6 +3,7 @@ package pt.ubi.di.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 
 public class Part implements Serializable {
@@ -13,6 +14,7 @@ public class Part implements Serializable {
     Float sellPrice;
     int minStock;
     int stock;
+    Date createdAt;
     private ArrayList<Item> items;
 
 
@@ -31,6 +33,11 @@ public class Part implements Serializable {
         this.sellPrice = sellPrice;
         this.minStock = minStock;
         items = new ArrayList<>();
+        this.createdAt = new Date();
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
     public ArrayList<Item> removeStock(int quantity) {
@@ -55,9 +62,9 @@ public class Part implements Serializable {
     }
 
     public Item addStock() {
-            Item i=new Item(UUID.randomUUID().toString());
-            stock = stock + 1;
-            items.add(i);
+        Item i = new Item(UUID.randomUUID().toString());
+        stock = stock + 1;
+        items.add(i);
         return i;
     }
 
@@ -103,15 +110,17 @@ public class Part implements Serializable {
 
     @Override
     public String toString() {
-        return "id=" +id+ " type=" +type+ " buyPrice=" +buyPrice+ " sellPrice=" +sellPrice+ " minStock=" + minStock + " stock=" + stock + " items=" + items;
+        return "id=" + id + " type=" + type + " buyPrice=" + buyPrice + " sellPrice=" + sellPrice + " minStock=" + minStock + " stock=" + stock + " items=" + items;
     }
+
     public String toStringClean() {
-        return "type=" +type+" Price=" +sellPrice+" stock=" + stock;
+        return "type=" + type + " Price=" + sellPrice + " stock=" + stock;
     }
 
     public String beautifyOutput() {
         return "ID -> " + this.id +
                 "\nType -> " + this.type +
+                "\nDate Added: " + this.getCreatedAt().toString() +
                 "\nBuy Price -> " + this.buyPrice +
                 "\nSell Price -> " + this.sellPrice +
                 "\nMinimum Stock -> " + this.minStock +

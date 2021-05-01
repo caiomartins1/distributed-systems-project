@@ -241,6 +241,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                         "2. Buy Price\n" +
                         "3. Sell price\n" +
                         "4. Items in stock\n" +
+                        "5. Date added\n" +
                         "0. Cancel\n" +
                         "Your Option: "
         );
@@ -259,6 +260,9 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 break;
             case 4:
                 managerClient.printOnClient(mService.listByStockItems(parts));
+                break;
+            case 5:
+                managerClient.printOnClient(mService.listByDateAdded(parts));
                 break;
             case 0:
                 managerClient.printOnClient("Canceling...");
@@ -382,6 +386,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                         "2. Buy Price\n" +
                         "3. Sell price\n" +
                         "4. Items in stock\n" +
+                        "5. Date added\n" +
                         "0. Cancel\n" +
                         "Your Option: "
         );
@@ -400,6 +405,9 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 break;
             case 4:
                 buyerClient.printOnClient(bService.listByStockItems(parts));
+                break;
+            case 5:
+                buyerClient.printOnClient(bService.listByDateAdded(parts));
                 break;
             case 0:
                 buyerClient.printOnClient("Canceling...");
