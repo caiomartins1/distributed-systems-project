@@ -4,10 +4,12 @@ import pt.ubi.di.interfaces.ManagerClientInterface;
 import pt.ubi.di.interfaces.ServerInterface;
 import pt.ubi.di.model.Part;
 import pt.ubi.di.utils.ReadUtils;
+import pt.ubi.di.utils.ShowInterfaces;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 public class ManagerClient extends UnicastRemoteObject implements ManagerClientInterface {
@@ -73,11 +75,13 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
         System.setSecurityManager(new SecurityManager());
 
         try {
-            String ipServer = "192.168.1.84";
-            System.setProperty("java.rmi.server.hostname",ipServer);
-
-            LocateRegistry.getRegistry(ipServer,1099);
-            ServerInterface server = (ServerInterface) Naming.lookup("server");
+            System.out.print("Type Server ip: ");
+            String ipServer = ReadUtils.readString();
+            String ownIp = ShowInterfaces.getIp();
+            System.out.println("Own ip is: "+ownIp);
+            System.setProperty("java.rmi.server.hostname",ownIp);
+            Registry registry=LocateRegistry.getRegistry(ipServer,1099);
+            ServerInterface server = (ServerInterface) registry.lookup("server");
             ManagerClient mClient = new ManagerClient();
             server.subscribeManager(mClient.getClientId(), mClient);
 
