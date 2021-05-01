@@ -4,6 +4,7 @@ import pt.ubi.di.interfaces.BuyerClientInterface;
 import pt.ubi.di.interfaces.ManagerClientInterface;
 import pt.ubi.di.interfaces.ServerInterface;
 import pt.ubi.di.model.*;
+import pt.ubi.di.services.BuyerService;
 import pt.ubi.di.services.ManagerService;
 import pt.ubi.di.utils.FileUtils;
 import pt.ubi.di.utils.ReadUtils;
@@ -30,10 +31,11 @@ import java.util.ArrayList;
 // TODO: 5 -> check all listings client and manager;
 
 public class Server extends UnicastRemoteObject implements ServerInterface {
-    private static BuyerClientInterface buyerClient;
+    private static ArrayList<BuyerClientInterface> bClients;
     private static ArrayList<ManagerClientInterface> mClients;
 
     private static ManagerService mService;
+    private static BuyerService bService;
 
     private static ArrayList<Part> parts;
 
@@ -45,20 +47,22 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     public Server() throws RemoteException {
         super();
         mService = new ManagerService();
+        bService = new BuyerService();
         buyingService = new Purchase();
         sellingService = new Sale();
         mClients = new ArrayList<>();
+        bClients = new ArrayList<>();
         loadData();
     }
 
     public void subscribeManager(String name, ManagerClientInterface client) {
-        System.out.println("Subscribing..." + name);
+        System.out.println("Subscribing " + name + " Manager");
         mClients.add(client);
     }
 
-    public void subscribeBuyer(String name, BuyerClientInterface client2) {
-        System.out.println("Subscribing..." + name);
-        buyerClient = client2;
+    public void subscribeBuyer(String name, BuyerClientInterface client) {
+        System.out.println("Subscribing " + name + " Buyer");
+        bClients.add(client);
     }
 
     private void loadData() {
@@ -66,10 +70,6 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         System.out.println("Loading data...");
         // TODO: Remove debug log
         System.out.println(parts.toString());
-    }
-
-    public void managerOption0() throws RemoteException {
-
     }
 
     public void managerOption1(ManagerClientInterface client, Part p) throws RemoteException {
@@ -245,11 +245,10 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     }
 
 
-    public void buyerOption1() throws RemoteException {
+    public void buyerOption1(BuyerClientInterface buyerClient) throws RemoteException {
 
-        //menu print
         buyerClient.printOnClient("---- Buying from Store ----");
-        for (int i = 0; i < parts.size(); ++i)//Print all parts available and their index on list
+        for (int i = 0; i < parts.size(); ++i)
             buyerClient.printOnClient(i + ":------>" + parts.get(i).toStringClean());
         buyerClient.printOnClient("choose what to buy, by number:\nType -2 to complete the order\nType -1 to cancel the order");
 
@@ -308,6 +307,38 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
             } catch (Exception e) {
                 System.out.println("ERROR on Thread: " + e.getMessage());
             }
+        }
+    }
+
+    public void buyerOption2(BuyerClientInterface buyerClient) throws RemoteException {
+        buyerClient.printOnClient(
+                "----- Choose a filter -----\n" +
+                        "1. Type\n" +
+                        "2. Buy Price\n" +
+                        "3. Sell price\n" +
+                        "4. Items in stock\n" +
+                        "Your Option: "
+        );
+
+        int option = buyerClient.readIntClient();
+
+        switch (option) {
+            case 1:
+                buyerClient.printOnClient(bService.listByTypeAlpha(parts));
+                break;
+            case 2:
+                buyerClient.printOnClient(bService.listByBuyPrice(parts));
+                break;
+            case 3:
+                buyerClient.printOnClient(bService.listBySellPrice(parts));
+                break;
+            case 4:
+                buyerClient.printOnClient(bService.listByStockItems(parts));
+                break;
+
+            default:
+                buyerClient.printOnClient("Invalid option!");
+                break;
         }
     }
 

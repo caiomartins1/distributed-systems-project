@@ -57,7 +57,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
         return new Part(type, buyPrice, sellPrice, minStock);
     }
 
-    public String getClientName() {
+    public String getClientId() {
         return this.id;
     }
 
@@ -69,7 +69,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
             LocateRegistry.getRegistry(1099);
             ServerInterface server = (ServerInterface) Naming.lookup("server");
             ManagerClient mClient = new ManagerClient();
-            server.subscribeManager(mClient.id, mClient);
+            server.subscribeManager(mClient.getClientId(), mClient);
 
             System.out.println("----- Connected to server -----");
 
@@ -109,7 +109,6 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
                         System.out.println("6");
                         break;
                     case "0":
-                        server.managerOption0();
                         System.out.println("Exiting...");
                         System.exit(0);
                         break;

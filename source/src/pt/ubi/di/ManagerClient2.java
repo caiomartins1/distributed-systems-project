@@ -15,7 +15,7 @@ public class ManagerClient2 extends UnicastRemoteObject implements ManagerClient
 
     public ManagerClient2() throws RemoteException {
         super();
-        id = "James";
+        id = "Caio";
     }
 
     public void printOnClient(String s) throws RemoteException {
@@ -44,6 +44,7 @@ public class ManagerClient2 extends UnicastRemoteObject implements ManagerClient
         System.out.print("Enter Part type: ");
         String type = ReadUtils.readString();
 
+
         System.out.print("Enter Part buy price: ");
         float buyPrice = ReadUtils.readFloat();
 
@@ -56,7 +57,7 @@ public class ManagerClient2 extends UnicastRemoteObject implements ManagerClient
         return new Part(type, buyPrice, sellPrice, minStock);
     }
 
-    public String getClientName() {
+    public String getClientId() {
         return this.id;
     }
 
@@ -67,8 +68,8 @@ public class ManagerClient2 extends UnicastRemoteObject implements ManagerClient
         try {
             LocateRegistry.getRegistry(1099);
             ServerInterface server = (ServerInterface) Naming.lookup("server");
-            ManagerClient2 mClient = new ManagerClient2();
-            server.subscribeManager(mClient.id, mClient);
+            ManagerClient mClient = new ManagerClient();
+            server.subscribeManager(mClient.getClientId(), mClient);
 
             System.out.println("----- Connected to server -----");
 
@@ -108,7 +109,6 @@ public class ManagerClient2 extends UnicastRemoteObject implements ManagerClient
                         System.out.println("6");
                         break;
                     case "0":
-                        server.managerOption0();
                         System.out.println("Exiting...");
                         System.exit(0);
                         break;

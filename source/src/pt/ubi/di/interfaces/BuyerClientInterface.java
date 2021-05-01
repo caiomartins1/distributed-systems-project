@@ -11,4 +11,5 @@ public interface BuyerClientInterface extends Remote {
     public String readStringClient() throws RemoteException;
     public int readIntClient() throws RemoteException;
     public char readCharClient() throws RemoteException;
+    public String getClientId() throws RemoteException;
 }
