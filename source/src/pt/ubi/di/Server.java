@@ -63,6 +63,16 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         bClients.add(client);
     }
 
+    private void outOfStockCallback(Part p) throws RemoteException {
+        for (ManagerClientInterface mClient : mClients) {
+            mClient.printOnClient("\n*** Warning " +
+                    mClient.getClientId() + " ***\n" +
+                    "Part \"" + p.getType() + "\" is out of stock!\n" +
+                    "Please restock ASAP!\n"
+            );
+        }
+    }
+
     private void loadData() {
         parts = FileUtils.retrieveParts();
         System.out.println("Loading data...");
@@ -105,6 +115,12 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
             } else {
                 System.out.println("No purchase made for part");
             }
+
+
+            if (p.getStock() < p.getMinStock()) {
+                outOfStockCallback(p);
+            }
+
         } catch (Exception e) {
             System.out.println("Error adding stock: " + e);
         }
@@ -316,6 +332,12 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 Thread.sleep(500);
                 buyerClient.printOnClientNoNL(".\n");
                 buyerClient.printOnClient("---- Success!!!! ----\n" + advSlip.toString());
+
+                for (Order order : orders) {
+                    if (order.getPart().getStock() <= order.getPart().getMinStock()) {
+                        outOfStockCallback(order.getPart());
+                    }
+                }
             } catch (Exception e) {
                 System.out.println("ERROR on Thread: " + e.getMessage());
             }
