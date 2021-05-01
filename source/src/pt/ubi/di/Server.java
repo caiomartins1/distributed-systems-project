@@ -46,9 +46,15 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         loadData();
     }
 
-    public void subscribeManager(String name, ManagerClientInterface client) {
+    public void subscribeManager(String name, ManagerClientInterface client) throws RemoteException {
         System.out.println("*** Subscribing Manager " + name + " ***");
         mClients.add(client);
+
+        for (Part p : parts) {
+            if (p.getStock() < p.getMinStock()) {
+                outOfStockCallback(p);
+            }
+        }
     }
 
     public void subscribeBuyer(String name, BuyerClientInterface client) {
@@ -74,7 +80,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         System.out.println("Loading data...");
     }
 
-    public void managerOption0(ManagerClientInterface client) throws RemoteException {
+    public void cu(ManagerClientInterface client) throws RemoteException {
         System.out.println("*** Manager " + client.getClientId() + " disconnected from Server ***");
         mClients.remove(client);
     }
@@ -440,8 +446,8 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         System.setSecurityManager(new SecurityManager());
         try {
             String ipServer = ShowInterfaces.getIp();
-            System.out.println("Server ip: "+ipServer);
-            System.setProperty("java.rmi.server.hostname",ipServer);
+            System.out.println("Server ip: " + ipServer);
+            System.setProperty("java.rmi.server.hostname", ipServer);
             LocateRegistry.createRegistry(1099);
             Server server = new Server();
             Naming.rebind("server", server);

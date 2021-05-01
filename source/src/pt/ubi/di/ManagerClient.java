@@ -123,7 +123,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
                         server.managerOption6(mClient);
                         break;
                     case "0":
-                        server.managerOption0(mClient);
+                        server.cu(mClient);
                         System.out.println("Exiting...");
                         System.exit(0);
                         break;
