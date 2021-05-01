@@ -54,7 +54,14 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
         System.out.print("Enter Part minimum stock: ");
         int minStock = ReadUtils.readInt();
 
+        boolean isInfoValid = !type.isEmpty() && (buyPrice > 0) && (sellPrice > 0) && (minStock > 0);
+
+        if (!isInfoValid) {
+            System.out.println("Part not created -> Invalid Input");
+            return null;
+        }
         return new Part(type, buyPrice, sellPrice, minStock);
+
     }
 
     public String getClientId() {
@@ -77,7 +84,7 @@ public class ManagerClient extends UnicastRemoteObject implements ManagerClientI
                 System.out.print(
                         "----- Store Manager Menu -----\n" +
                                 "----- Choose an action: -----\n" +
-                                    "1. Register a product\n" + // DONE need valid (caio), int bug (vitor)
+                                "1. Register a product\n" + // DONE need valid (caio), int bug (vitor)
                                 "2. Add stock to existing part(s)\n" + // DONE -> maybe formatting improve (vitor)
                                 "3. Remove a part\n" +
                                 "4. List existing parts\n" +

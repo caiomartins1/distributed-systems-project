@@ -17,7 +17,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-// TODO: 0 -> format IDs
 // TODO: 2 -> Store balance
 // TODO: 3 -> Remote Setup
 // TODO: 4 -> Add date to part
@@ -57,6 +56,16 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         bClients.add(client);
     }
 
+    private void outOfStockCallback(Part p) throws RemoteException {
+        for (ManagerClientInterface mClient : mClients) {
+            mClient.printOnClient("\n*** Warning " +
+                    mClient.getClientId() + " ***\n" +
+                    "Part \"" + p.getType() + "\" is out of stock!\n" +
+                    "Please restock ASAP!\n"
+            );
+        }
+    }
+
     private void loadData() {
         parts = FileUtils.retrieveParts();
         buyingService.setPurchaseHistory(FileUtils.retrievePurchaseHistory());
@@ -67,6 +76,17 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     }
 
     public void managerOption1(ManagerClientInterface client, Part p) throws RemoteException {
+
+        if (p == null) {
+            return;
+        }
+
+        for (Part p1 : parts) {
+            if (p1.getType().compareToIgnoreCase(p.getType()) == 0) {
+                client.printOnClient("Part: \"" + p.getType() + "\" already exists!");
+                return;
+            }
+        }
 
         client.printOnClient("---- Registering new part ----");
         mService.registerPart(parts, p);
@@ -90,6 +110,12 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
             } else {
                 System.out.println("____ No purchase made for part ____");
             }
+
+
+            if (p.getStock() < p.getMinStock()) {
+                outOfStockCallback(p);
+            }
+
         } catch (Exception e) {
             System.out.println("Error adding stock: " + e);
         }
@@ -209,6 +235,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                         "2. Buy Price\n" +
                         "3. Sell price\n" +
                         "4. Items in stock\n" +
+                        "0. Cancel\n" +
                         "Your Option: "
         );
 
@@ -227,7 +254,9 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
             case 4:
                 managerClient.printOnClient(mService.listByStockItems(parts));
                 break;
-
+            case 0:
+                managerClient.printOnClient("Canceling...");
+                break;
             default:
                 managerClient.printOnClient("____ Invalid option! ____");
                 break;
@@ -320,6 +349,12 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 Thread.sleep(500);
                 buyerClient.printOnClientNoNL(". ----\n");
                 buyerClient.printOnClient("---- Success!!!! ----\n" + advSlip.toString());
+
+                for (Order order : orders) {
+                    if (order.getPart().getStock() <= order.getPart().getMinStock()) {
+                        outOfStockCallback(order.getPart());
+                    }
+                }
             } catch (Exception e) {
                 System.out.println("ERROR on Thread: " + e.getMessage());
             }
@@ -335,6 +370,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                         "2. Buy Price\n" +
                         "3. Sell price\n" +
                         "4. Items in stock\n" +
+                        "0. Cancel\n" +
                         "Your Option: "
         );
 
@@ -353,7 +389,9 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
             case 4:
                 buyerClient.printOnClient(bService.listByStockItems(parts));
                 break;
-
+            case 0:
+                buyerClient.printOnClient("Canceling...");
+                break;
             default:
                 buyerClient.printOnClient("____ Invalid option! ____");
                 break;

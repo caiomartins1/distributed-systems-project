@@ -61,7 +61,7 @@ public class BuyerClient extends UnicastRemoteObject implements BuyerClientInter
                 System.out.print(
                         "----- Buyer Manager Menu -----\n" +
                                 "----- Choose an action: -----\n" +
-                                "1. Buy a product\n" + // DONE need valid (caio), int bug (vitor)
+                                "1. Buy a product\n" +
                                 "2. List existing parts\n" +
                                 "3. List sells\n" + // DOING (vitor)
                                 "0. Exit\n" +

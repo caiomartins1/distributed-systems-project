@@ -13,7 +13,7 @@ public class ReadUtils {
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in), 1);
             s = in.readLine();
         } catch (IOException e) {
-            System.out.println("Error on read String: "+e.getMessage());
+            System.out.println("Error on read String: " + e.getMessage());
         }
         return s;
     }
@@ -25,7 +25,7 @@ public class ReadUtils {
             s = readString();
             f = Float.parseFloat(s);
         } catch (Exception e) {
-            System.out.println("Error on read Float: " + e.getMessage());
+            System.out.println("Input should be a float");
         }
 
         return f;
@@ -38,30 +38,30 @@ public class ReadUtils {
             s = readString();
             i = Integer.parseInt(s.trim());
         } catch (Exception e) {
-            System.out.println("Error on read int: " + e.getMessage());
+            System.out.println("Input should be an integer");
         }
         return i;
     }
 
     public static int readIntAlt() {
         Scanner s = new Scanner(System.in);
-        int num=-3;
+        int num = -3;
         try {
             s.nextInt();
-        } catch(Exception e) {
-            System.out.println("Error on readIntAlt: "+e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Input should be an integer");
         }
         return num;
     }
 
     public static char readChar() {
         String s = "";
-        char c=' ';
+        char c = ' ';
         try {
             s = readString();
             c = s.charAt(0);
         } catch (Exception e) {
-            System.out.println("Error on read char: "+e.getMessage());
+            System.out.println("Input should be a char");
         }
         return c;
     }
