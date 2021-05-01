@@ -24,7 +24,6 @@ import java.util.ArrayList;
 // TODO: 4 -> Add date to receipt and part
 // TODO: 4 -> add name to receipt
 // TODO: 5 -> change arraylist of string to array list of items (receipts, Part...)
-// TODO: 5 -> Validate prod name
 // TODO: 5 -> Write Receipts
 // TODO: 5 -> make sure stock are written
 // TODO: 5 -> check all listings client and manager;
@@ -72,6 +71,17 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
     }
 
     public void managerOption1(ManagerClientInterface client, Part p) throws RemoteException {
+
+        if (p == null) {
+            return;
+        }
+
+        for (Part p1 : parts) {
+            if (p1.getType().compareToIgnoreCase(p.getType()) == 0) {
+                client.printOnClient("Part: \"" + p.getType() + "\" already exists!");
+                return;
+            }
+        }
 
         client.printOnClient("---- Registering new part ----");
         mService.registerPart(parts, p);
@@ -210,6 +220,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                         "2. Buy Price\n" +
                         "3. Sell price\n" +
                         "4. Items in stock\n" +
+                        "0. Cancel\n" +
                         "Your Option: "
         );
 
@@ -228,7 +239,9 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
             case 4:
                 managerClient.printOnClient(mService.listByStockItems(parts));
                 break;
-
+            case 0:
+                managerClient.printOnClient("Canceling...");
+                break;
             default:
                 managerClient.printOnClient("Invalid option!");
                 break;
@@ -316,6 +329,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                         "2. Buy Price\n" +
                         "3. Sell price\n" +
                         "4. Items in stock\n" +
+                        "0. Cancel\n" +
                         "Your Option: "
         );
 
@@ -334,7 +348,9 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
             case 4:
                 buyerClient.printOnClient(bService.listByStockItems(parts));
                 break;
-
+            case 0:
+                buyerClient.printOnClient("Canceling...");
+                break;
             default:
                 buyerClient.printOnClient("Invalid option!");
                 break;
