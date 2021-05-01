@@ -7,9 +7,7 @@ import pt.ubi.di.model.*;
 import pt.ubi.di.services.BuyerService;
 import pt.ubi.di.services.ManagerService;
 import pt.ubi.di.utils.FileUtils;
-import pt.ubi.di.utils.ReadUtils;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -101,7 +99,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     client.printOnClient("Type quantity: ");
                     quantity = client.readIntClient();
                     if (quantity > 0) {
-                        buyingService.buySingleOrder(new Order(p, quantity),client.getClientId());
+                        buyingService.buySingleOrder(new Order(p, quantity), client.getClientId());
                         client.printOnClient("---- Purchase made ----");
                     } else {
                         client.printOnClient("____Wrong value____");
@@ -110,7 +108,6 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
             } else {
                 System.out.println("____ No purchase made for part ____");
             }
-
 
             if (p.getStock() < p.getMinStock()) {
                 outOfStockCallback(p);
@@ -170,7 +167,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 for (Order value : orders) {
                     client.printOnClient(value.getPart().toStringClean());
                 }
-                AdvanceReceipt advSlip = buyingService.buyOrder(orders,client.getClientId());
+                AdvanceReceipt advSlip = buyingService.buyOrder(orders, client.getClientId());
                 client.printOnClientNoNL("---- Checking order");
                 Thread.sleep(500);
                 client.printOnClientNoNL(".");
@@ -265,7 +262,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
     public void managerOption5(ManagerClientInterface managerClient) {
         try {
-            if(buyingService.getPurchaseHistory().isEmpty()) {
+            if (buyingService.getPurchaseHistory().isEmpty()) {
                 managerClient.printOnClient("____ No purchases to show ____");
                 return;
             }
@@ -278,7 +275,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
     public void managerOption6(ManagerClientInterface managerClient) {
         try {
-            if(sellingService.getSellHistory().isEmpty()) {
+            if (sellingService.getSellHistory().isEmpty()) {
                 managerClient.printOnClient("____ No sales to show ____");
                 return;
             }
@@ -311,13 +308,13 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 buyerClient.printOnClient("Confirming Order.....");
                 eval = false;
             } else {
-                if (0 <= option && option <= parts.size()) {
+                if (0 <= option && option < parts.size()) {
                     buyerClient.printOnClientNoNL("Product: " + parts.get(option).getType() + " -> type quantity:");
                     int quantity = buyerClient.readIntClient();
                     Part part = parts.get(option);
                     System.out.println(part.toString());
                     if (quantity > 0) {
-                        if (quantity < parts.get(option).getStock()) {
+                        if (quantity <= parts.get(option).getStock()) {
                             orders.add(new Order(part, quantity));
                         } else {
                             buyerClient.printOnClient("Not enough stock");
@@ -338,7 +335,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 for (Order value : orders) {
                     buyerClient.printOnClient(value.getPart().toStringClean());
                 }
-                AdvanceReceipt advSlip = sellingService.sellOrder(orders,buyerClient.getClientId());
+                AdvanceReceipt advSlip = sellingService.sellOrder(orders, buyerClient.getClientId());
                 buyerClient.printOnClientNoNL("Checking order");
                 Thread.sleep(500);
                 buyerClient.printOnClientNoNL(".");
@@ -351,7 +348,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 buyerClient.printOnClient("---- Success!!!! ----\n" + advSlip.toString());
 
                 for (Order order : orders) {
-                    if (order.getPart().getStock() <= order.getPart().getMinStock()) {
+                    if (order.getPart().getStock() < order.getPart().getMinStock()) {
                         outOfStockCallback(order.getPart());
                     }
                 }
@@ -400,12 +397,12 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
     public void buyerOption3(BuyerClientInterface buyerClient) throws RemoteException {
         try {
-            if(sellingService.getSellHistory().isEmpty()){
+            if (sellingService.getSellHistory().isEmpty()) {
                 buyerClient.printOnClient("____ No purchases to show ____");
                 return;
             }
-            for(AdvanceReceipt advSlip : sellingService.getSellHistory()){
-                if (buyerClient.getClientId().equals(advSlip.getName())){
+            for (AdvanceReceipt advSlip : sellingService.getSellHistory()) {
+                if (buyerClient.getClientId().equals(advSlip.getName())) {
                     buyerClient.printOnClient(advSlip.toString());
                 }
             }

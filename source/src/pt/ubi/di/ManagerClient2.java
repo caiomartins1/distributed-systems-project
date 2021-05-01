@@ -68,7 +68,7 @@ public class ManagerClient2 extends UnicastRemoteObject implements ManagerClient
         try {
             LocateRegistry.getRegistry(1099);
             ServerInterface server = (ServerInterface) Naming.lookup("server");
-            ManagerClient mClient = new ManagerClient();
+            ManagerClient2 mClient = new ManagerClient2();
             server.subscribeManager(mClient.getClientId(), mClient);
 
             System.out.println("----- Connected to server -----");
