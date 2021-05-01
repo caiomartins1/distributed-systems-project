@@ -86,10 +86,12 @@ public class BuyerClient extends UnicastRemoteObject implements BuyerClientInter
                         server.buyerOption3(bClient);
                         break;
                     case "0":
+                        server.buyerOption0(bClient);
                         System.out.println("Exiting...");
                         System.exit(0);
                         break;
                     default:
+
                         System.out.println("Invalid Option");
                         break;
                 }

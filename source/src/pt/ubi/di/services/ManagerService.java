@@ -100,4 +100,25 @@ public class ManagerService {
 
         return s;
     }
+
+    public String listByDateAdded(ArrayList<Part> p) {
+        String s = "";
+
+        if (p.isEmpty()) {
+            s = "No parts registered yet!";
+        } else {
+            Collections.sort(p, new Comparator<Part>() {
+                @Override
+                public int compare(Part s1, Part s2) {
+                    return s1.getCreatedAt().after(s2.getCreatedAt()) ? -1 : 1;
+                }
+            });
+
+            for (Part part : p) {
+                s += part.beautifyOutput() + "\n";
+            }
+        }
+
+        return s;
+    }
 }
