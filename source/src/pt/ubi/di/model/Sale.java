@@ -7,6 +7,7 @@ public class Sale {
     ArrayList<AdvanceReceipt> sellHistory;
     ArrayList<Item> tempItems;
     ArrayList<Receipt> receipts;
+    String whoFor;
 
     /**
      * Constructor for Sale class
@@ -16,6 +17,7 @@ public class Sale {
         sellHistory = new ArrayList<>(); // always persistent
         tempItems = new ArrayList<>(); // reset at every part order
         receipts = new ArrayList<>(); // reset at every set of orders
+        whoFor = "BUYING(from store)";
     }
 
     public void setSellHistory(ArrayList<AdvanceReceipt> sellHistory) {
@@ -51,7 +53,7 @@ public class Sale {
         for (Order order : orders) {
             receipts.add(sellingSinglePart(order.getQuantity(), order.getPart()));
         }
-        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts, "BUYING(from store)",name);
+        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts,whoFor,name);
         sellHistory.add(advanceReceipt);
         return advanceReceipt;
     }
@@ -65,13 +67,17 @@ public class Sale {
     public AdvanceReceipt sellSingleOrder(Order order,String name) {
         receipts.clear();
         receipts.add(sellingSinglePart(order.getQuantity(), order.getPart()));
-        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts, "BUYING(from store)",name);
+        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts, whoFor,name);
         sellHistory.add(advanceReceipt);
         return advanceReceipt;
     }
 
     public ArrayList<AdvanceReceipt> getSellHistory() {
         return sellHistory;
+    }
+
+    public String getWhoFor() {
+        return whoFor;
     }
 
     @Override

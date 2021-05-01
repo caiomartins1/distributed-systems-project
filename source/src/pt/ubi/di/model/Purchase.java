@@ -11,6 +11,7 @@ public class Purchase {
     ArrayList<AdvanceReceipt> purchaseHistory;
     ArrayList<Item> tempItems;
     ArrayList<Receipt> receipts;
+    String whoFor;
 
     /**
      * Constructor for Purchase class
@@ -20,6 +21,7 @@ public class Purchase {
         purchaseHistory = new ArrayList<>(); // always persistent
         tempItems = new ArrayList<>(); // reset at every part order
         receipts = new ArrayList<>(); // reset at every set of orders
+        whoFor = "BUYING(From supplier)";
     }
 
     public void setPurchaseHistory(ArrayList<AdvanceReceipt> purchaseHistory) {
@@ -55,7 +57,7 @@ public class Purchase {
         for (Order order : orders) {
             receipts.add(buySinglePart(order.getQuantity(), order.getPart()));
         }
-        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts, "BUYING(From supplier)",name);
+        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts, whoFor,name);
         purchaseHistory.add(advanceReceipt);
         return advanceReceipt;
     }
@@ -69,13 +71,17 @@ public class Purchase {
     public AdvanceReceipt buySingleOrder(Order order, String name) {
         receipts.clear();
         receipts.add(buySinglePart(order.getQuantity(), order.getPart()));
-        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts, "BUYING(from supplier)",name);
+        AdvanceReceipt advanceReceipt = new AdvanceReceipt(receipts,whoFor,name);
         purchaseHistory.add(advanceReceipt);
         return advanceReceipt;
     }
 
     public ArrayList<AdvanceReceipt> getPurchaseHistory() {
         return purchaseHistory;
+    }
+
+    public String getWhoFor() {
+        return whoFor;
     }
 
     @Override

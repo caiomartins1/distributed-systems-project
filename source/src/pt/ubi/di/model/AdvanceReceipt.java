@@ -3,6 +3,7 @@ package pt.ubi.di.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -38,6 +39,18 @@ public class AdvanceReceipt implements Serializable {
         return name;
     }
 
+    public float getTotalCost() {
+        return totalCost;
+    }
+
+    public String getWhoFor() {
+        return whoFor;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return timeOfPurchase;
+    }
+
     public String toString() {
         String note = "";
         boolean printItem;
@@ -47,7 +60,7 @@ public class AdvanceReceipt implements Serializable {
             note = note.concat(slip.toStringReceipt(printItem) + "\n");
         }
         return ("\n__________________ PRINTING " + whoFor +  " NAME: " + name + "__________________\n"
-                + " RECEIPT ID: " + id + "\n"
+                + "RECEIPT ID: " + id + "\n"
                 + "Date: " + timeOfPurchase.getYear() +"/"+ timeOfPurchase.getMonth() +"/"+ timeOfPurchase.getDayOfMonth() +"  "+ timeOfPurchase.getHour() +":"+ timeOfPurchase.getMinute() + "\n"
                 + note + "\n"
                 + "Total cost=" + totalCost + "\n"

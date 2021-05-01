@@ -4,10 +4,12 @@ import pt.ubi.di.interfaces.ManagerClientInterface;
 import pt.ubi.di.interfaces.ServerInterface;
 import pt.ubi.di.model.Part;
 import pt.ubi.di.utils.ReadUtils;
+import pt.ubi.di.utils.ShowInterfaces;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 public class ManagerClient2 extends UnicastRemoteObject implements ManagerClientInterface {
@@ -66,8 +68,18 @@ public class ManagerClient2 extends UnicastRemoteObject implements ManagerClient
         System.setSecurityManager(new SecurityManager());
 
         try {
-            LocateRegistry.getRegistry(1099);
-            ServerInterface server = (ServerInterface) Naming.lookup("server");
+            String ownIp = ShowInterfaces.getIp();
+            System.out.println("Own ip is: "+ownIp);
+
+            System.out.print("Type Server ip: ");
+            String ipServer = ReadUtils.readString();
+            if(ipServer.equals("")){
+                ipServer = ownIp;
+            }
+
+            System.setProperty("java.rmi.server.hostname",ownIp);
+            Registry registry=LocateRegistry.getRegistry(ipServer,1099);
+            ServerInterface server = (ServerInterface) registry.lookup("server");
             ManagerClient2 mClient = new ManagerClient2();
             server.subscribeManager(mClient.getClientId(), mClient);
 
@@ -83,6 +95,7 @@ public class ManagerClient2 extends UnicastRemoteObject implements ManagerClient
                                 "4. List existing parts\n" +
                                 "5. List purchases to suppliers\n" + // DONE -> maybe formatting improve (vitor)
                                 "6. List sells\n" + // DOING (vitor)
+                                "7. Store balance\n" +
                                 "0. Exit\n" + // DONE
                                 "Your action:"
                 );
@@ -107,6 +120,8 @@ public class ManagerClient2 extends UnicastRemoteObject implements ManagerClient
                         break;
                     case "6":
                         server.managerOption6(mClient);
+                    case "7":
+                        server.managerOption7(mClient);
                         break;
                     case "0":
                         server.cu(mClient);

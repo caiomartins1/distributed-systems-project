@@ -10,6 +10,7 @@ public class FileUtils {
     private static String partsFile = "./db/parts.db";
     private static String purchaseFile = "./db/purchaseHistory.db";
     private static String saleFile = "./db/saleHistory.db";
+    private static String balanceFile = "./db/storeBalance.db";
 
     public static void saveParts(ArrayList<Part> parts) {
 
@@ -108,6 +109,39 @@ public class FileUtils {
         }
 
         return advanceReceipts;
+    }
+
+    public static void saveStoreBalance(float value) {
+
+        try {
+            FileOutputStream writeData = new FileOutputStream(balanceFile);
+            ObjectOutputStream writeStream = new ObjectOutputStream(writeData);
+
+            writeStream.writeObject(value);
+            writeStream.flush();
+            writeStream.close();
+
+        } catch (IOException e) {
+            System.out.println("FileUtils -> " + e.getMessage());
+        }
+    }
+
+    public static float retrieveStoreBalance() {
+        float value;
+
+        try {
+            FileInputStream readData = new FileInputStream(balanceFile);
+            ObjectInputStream readStream = new ObjectInputStream(readData);
+
+            value = (float) readStream.readObject();
+            readStream.close();
+
+        } catch (Exception e) {
+            System.out.println("File Utils -> " + e.getMessage());
+            return 0;
+        }
+
+        return value;
     }
 }
 
