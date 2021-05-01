@@ -21,9 +21,6 @@ import java.util.ArrayList;
 // TODO: 2 -> Store balance
 // TODO: 3 -> Remote Setup
 // TODO: 4 -> Add date to part
-// TODO: 5 -> Write Receipts
-// TODO: 5 -> make sure stock are written
-// TODO: 5 -> check all listings client and manager;
 
 public class Server extends UnicastRemoteObject implements ServerInterface {
     private static ArrayList<BuyerClientInterface> bClients;
