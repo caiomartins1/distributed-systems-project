@@ -5,13 +5,11 @@ import pt.ubi.di.interfaces.ServerInterface;
 import pt.ubi.di.utils.ReadUtils;
 import pt.ubi.di.utils.ShowInterfaces;
 
-import java.rmi.Naming;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.UUID;
+
 
 public class BuyerClient extends UnicastRemoteObject implements BuyerClientInterface {
     private String id;

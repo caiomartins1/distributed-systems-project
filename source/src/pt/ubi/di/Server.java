@@ -46,9 +46,15 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         loadData();
     }
 
-    public void subscribeManager(String name, ManagerClientInterface client) {
+    public void subscribeManager(String name, ManagerClientInterface client) throws RemoteException {
         System.out.println("*** Subscribing Manager " + name + " ***");
         mClients.add(client);
+
+        for (Part p : parts) {
+            if (p.getStock() < p.getMinStock()) {
+                outOfStockCallback(p);
+            }
+        }
     }
 
     public void subscribeBuyer(String name, BuyerClientInterface client) {
@@ -75,7 +81,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         System.out.println("Loading data...");
     }
 
-    public void managerOption0(ManagerClientInterface client) throws RemoteException {
+    public void cu(ManagerClientInterface client) throws RemoteException {
         System.out.println("*** Manager " + client.getClientId() + " disconnected from Server ***");
         mClients.remove(client);
     }
@@ -164,7 +170,6 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     client.printOnClientNoNL("Product: " + parts.get(option).getType() + " -> type quantity:");
                     int quantity = client.readIntClient();
                     Part part = parts.get(option);
-                    System.out.println(part.toString());
                     if (quantity > 0) {
                         orders.add(new Order(part, quantity));
                     } else {
@@ -191,6 +196,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 client.printOnClientNoNL(".");Thread.sleep(400);
                 client.printOnClientNoNL(". ----\n");
                 client.printOnClient("---- Success!!!! ----\n" + advSlip.toString());
+                System.out.println("*** Manager " + client.getClientId() + " made a purchase ***");
             } catch (Exception e) {
                 System.out.println("ERROR on Thread: " + e.getMessage());
             }
@@ -359,7 +365,6 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     buyerClient.printOnClientNoNL("Product: " + parts.get(option).getType() + " -> type quantity:");
                     int quantity = buyerClient.readIntClient();
                     Part part = parts.get(option);
-                    System.out.println(part.toString());
                     if (quantity > 0) {
                         if (quantity <= parts.get(option).getStock()) {
                             orders.add(new Order(part, quantity));
@@ -466,8 +471,8 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         System.setSecurityManager(new SecurityManager());
         try {
             String ipServer = ShowInterfaces.getIp();
-            System.out.println("Server ip: "+ipServer);
-            System.setProperty("java.rmi.server.hostname",ipServer);
+            System.out.println("Server ip: " + ipServer);
+            System.setProperty("java.rmi.server.hostname", ipServer);
             LocateRegistry.createRegistry(1099);
             Server server = new Server();
             Naming.rebind("server", server);

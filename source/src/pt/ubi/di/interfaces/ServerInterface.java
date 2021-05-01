@@ -10,7 +10,7 @@ public interface ServerInterface extends Remote {
 
     public void subscribeBuyer(String name, BuyerClientInterface client2) throws RemoteException;
 
-    public void managerOption0(ManagerClientInterface client) throws RemoteException;
+    public void cu(ManagerClientInterface client) throws RemoteException;
 
     public void managerOption1(ManagerClientInterface client, Part p) throws RemoteException;
 
