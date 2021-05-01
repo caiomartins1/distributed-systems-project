@@ -1,6 +1,5 @@
 package pt.ubi.di.model;
 
-import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
 import java.util.UUID;
 

@@ -27,7 +27,6 @@ import java.util.ArrayList;
 // TODO: 5 -> Validate prod name
 // TODO: 5 -> Write Receipts
 // TODO: 5 -> make sure stock are written
-// TODO: 5 -> Convert buyer to multi buyers
 // TODO: 5 -> check all listings client and manager;
 
 public class Server extends UnicastRemoteObject implements ServerInterface {

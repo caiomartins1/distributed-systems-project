@@ -1,7 +1,5 @@
 package pt.ubi.di.interfaces;
 
-import pt.ubi.di.utils.ReadUtils;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
