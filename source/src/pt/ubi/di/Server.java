@@ -120,7 +120,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     }
                 } while (quantity <= 0);
             } else {
-                System.out.println("____ No purchase made for part ____");
+                client.printOnClient("____ No purchase made for part ____");
             }
 
             if (p.getStock() < p.getMinStock()) {
@@ -162,7 +162,6 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     client.printOnClientNoNL("Product: " + parts.get(option).getType() + " -> type quantity:");
                     int quantity = client.readIntClient();
                     Part part = parts.get(option);
-                    System.out.println(part.toString());
                     if (quantity > 0) {
                         orders.add(new Order(part, quantity));
                     } else {
@@ -192,6 +191,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                 Thread.sleep(500);
                 client.printOnClientNoNL(". ----\n");
                 client.printOnClient("---- Success!!!! ----\n" + advSlip.toString());
+                System.out.println("*** Manager " + client.getClientId() + " made a purchase ***");
             } catch (Exception e) {
                 System.out.println("ERROR on Thread: " + e.getMessage());
             }
@@ -337,7 +337,6 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
                     buyerClient.printOnClientNoNL("Product: " + parts.get(option).getType() + " -> type quantity:");
                     int quantity = buyerClient.readIntClient();
                     Part part = parts.get(option);
-                    System.out.println(part.toString());
                     if (quantity > 0) {
                         if (quantity <= parts.get(option).getStock()) {
                             orders.add(new Order(part, quantity));
