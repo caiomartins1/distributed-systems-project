@@ -8,6 +8,7 @@ import pt.ubi.di.services.BuyerService;
 import pt.ubi.di.services.ManagerService;
 import pt.ubi.di.utils.FileUtils;
 
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -414,6 +415,9 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         String s;
         System.setSecurityManager(new SecurityManager());
         try {
+            String ipServer="192.168.1.83";
+            System.setProperty("java.rmi.server.hostname",ipServer);
+
             LocateRegistry.createRegistry(1099);
             Server server = new Server();
             Naming.rebind("server", server);
