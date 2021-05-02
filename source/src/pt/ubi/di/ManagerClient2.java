@@ -6,7 +6,6 @@ import pt.ubi.di.model.Part;
 import pt.ubi.di.utils.ReadUtils;
 import pt.ubi.di.utils.ShowInterfaces;
 
-import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -15,31 +14,38 @@ import java.rmi.server.UnicastRemoteObject;
 public class ManagerClient2 extends UnicastRemoteObject implements ManagerClientInterface {
     private String id;
 
+    // Initializes the Manager ID
     public ManagerClient2() throws RemoteException {
         super();
         id = "Vitor";
     }
 
+    // Enables server to display messages to clients
     public void printOnClient(String s) throws RemoteException {
         System.out.println(s);
     }
 
+    // Enables server to read strings from client input
     public String readStringClient() throws RemoteException {
         return ReadUtils.readString();
     }
 
+    // Enables server to read ints from client input
     public int readIntClient() throws RemoteException {
         return ReadUtils.readInt();
     }
 
+    // Enables server to read chars from client input
     public char readCharClient() throws RemoteException {
         return ReadUtils.readChar();
     }
 
+    // Enables server to display messages to clients (no new line for formatting purposes)
     public void printOnClientNoNL(String s) throws RemoteException {
         System.out.print(s);
     }
 
+    // Read input from user and creates a Part object (used for managerOption1())
     private static Part generatePart() {
         System.out.println("----- Adding a new Part -----");
 
@@ -66,10 +72,12 @@ public class ManagerClient2 extends UnicastRemoteObject implements ManagerClient
 
     }
 
+    // Enables the server to retrieve the client id
     public String getClientId() {
         return this.id;
     }
 
+    // Enables both connection from localhost or others PCs in the same network
     public static void main(String[] args) {
         String option = "";
         System.setSecurityManager(new SecurityManager());
@@ -96,14 +104,14 @@ public class ManagerClient2 extends UnicastRemoteObject implements ManagerClient
                 System.out.print(
                         "----- Store Manager Menu -----\n" +
                                 "----- Choose an action: -----\n" +
-                                "1. Register a product\n" + // DONE need valid (caio), int bug (vitor)
-                                "2. Add stock to existing part(s)\n" + // DONE -> maybe formatting improve (vitor)
+                                "1. Register a product\n" +
+                                "2. Add stock to existing part(s)\n" +
                                 "3. Remove a part\n" +
                                 "4. List existing parts\n" +
-                                "5. List purchases to suppliers\n" + // DONE -> maybe formatting improve (vitor)
-                                "6. List sells\n" + // DOING (vitor)
+                                "5. List purchases to suppliers\n" +
+                                "6. List sells\n" +
                                 "7. Store balance\n" +
-                                "0. Exit\n" + // DONE
+                                "0. Exit\n" +
                                 "Your action:"
                 );
 
@@ -132,7 +140,7 @@ public class ManagerClient2 extends UnicastRemoteObject implements ManagerClient
                         server.managerOption7(mClient);
                         break;
                     case "0":
-                        server.cu(mClient);
+                        server.managerOption0(mClient);
                         System.out.println("Exiting...");
                         System.exit(0);
                         break;

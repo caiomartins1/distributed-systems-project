@@ -6,6 +6,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+/* BuyerService contains some of the logic for:
+ *   - Registering a Part
+ *   - Deleting a Part
+ *   - List ordering
+ *
+ *   It was created for abstraction purposes, tried to remove some responsibility from the Server Class
+ * */
 public class BuyerService {
 
     public String listByTypeAlpha(ArrayList<Part> p) {

@@ -9,8 +9,6 @@ import pt.ubi.di.services.ManagerService;
 import pt.ubi.di.utils.FileUtils;
 import pt.ubi.di.utils.ShowInterfaces;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -18,12 +16,18 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-// TODO: 2 -> Store balance
-// TODO: 3 -> Remote Setup
+/* **************************************************************************************************
+ *                                   Trabalho realizado por:                                        *
+ *                                   - Caio Martins - 41375                                         *
+ *                                   - Vitor Neto - 41178                                           *
+ *                                   - Mbalu Lukaya Júnior - 40727                                  *
+ * **************************************************************************************************/
+
 
 public class Server extends UnicastRemoteObject implements ServerInterface {
-    private static ArrayList<BuyerClientInterface> bClients;
-    private static ArrayList<ManagerClientInterface> mClients;
+    // ArrayLists with all clients connected to server
+    private static ArrayList<BuyerClientInterface> bClients; // unused, but important in case of needing send a callback to all clients
+    private static ArrayList<ManagerClientInterface> mClients; // used to send the callback to managers
 
     private static ManagerService mService;
     private static BuyerService bService;
@@ -35,6 +39,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
 
     private float storeBalance;
 
+    // Initialization of core variables and loading the data from files
     public Server() throws RemoteException {
         super();
         mService = new ManagerService();
@@ -46,6 +51,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         loadData();
     }
 
+    // Methods for subscribing managers and buyers clients
     public void subscribeManager(String name, ManagerClientInterface client) throws RemoteException {
         System.out.println("*** Subscribing Manager " + name + " ***");
         mClients.add(client);
@@ -62,6 +68,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         bClients.add(client);
     }
 
+    // Method for send the callback to managers when a product is out of stock
     private void outOfStockCallback(Part p) throws RemoteException {
         System.out.println("*** Notifying Managers \"" + p.getType() + "\" is out of stock... ***");
         for (ManagerClientInterface mClient : mClients) {
@@ -73,6 +80,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         }
     }
 
+    // Reads data from files and load the ArrayLists
     private void loadData() {
         parts = FileUtils.retrieveParts();
         buyingService.setPurchaseHistory(FileUtils.retrievePurchaseHistory());
@@ -81,11 +89,14 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         System.out.println("Loading data...");
     }
 
-    public void cu(ManagerClientInterface client) throws RemoteException {
+    // All the following methods are called in respective clients
+    // Disconnect manager from server
+    public void managerOption0(ManagerClientInterface client) throws RemoteException {
         System.out.println("*** Manager " + client.getClientId() + " disconnected from Server ***");
         mClients.remove(client);
     }
 
+    // Add a new Part
     public void managerOption1(ManagerClientInterface client, Part p) throws RemoteException {
 
         if (p == null) {
@@ -147,6 +158,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         FileUtils.savePurchaseHistory(buyingService.getPurchaseHistory());
     }
 
+    // Displays all existing parts and enables user to buy items for a part
     public void managerOption2(ManagerClientInterface client) throws RemoteException {
 
 
@@ -214,6 +226,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         FileUtils.savePurchaseHistory(buyingService.getPurchaseHistory());
     }
 
+    // Displays all existing parts and enables user to select one to delete
     public void managerOption3(ManagerClientInterface managerClient) throws RemoteException {
 
         if (parts.size() == 0) {
@@ -255,6 +268,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         FileUtils.saveParts(parts);
     }
 
+    // Listing existing parts (by Type, Buy Price, Sell Price, Items in Stock and Date added)
     public void managerOption4(ManagerClientInterface managerClient) throws RemoteException {
         managerClient.printOnClient(
                 "----- Choose a filter -----\n" +
@@ -294,6 +308,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         }
     }
 
+    // Display a list of purchases made to suppliers
     public void managerOption5(ManagerClientInterface managerClient) {
         try {
             if (buyingService.getPurchaseHistory().isEmpty()) {
@@ -307,6 +322,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         }
     }
 
+    // Display a list of purchases made by Buyers Client (Sellings)
     public void managerOption6(ManagerClientInterface managerClient) {
         try {
             if (sellingService.getSellHistory().isEmpty()) {
@@ -320,6 +336,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         }
     }
 
+    // Display the store balance
     public void managerOption7(ManagerClientInterface managerClient) {
 
         ArrayList<AdvanceReceipt> history = new ArrayList<>();
@@ -342,11 +359,13 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         }
     }
 
+    // Disconnect a buyer client from server
     public void buyerOption0(BuyerClientInterface buyerClient) throws RemoteException {
         System.out.println("*** Buyer " + buyerClient.getClientId() + " disconnected from Server ***");
         bClients.remove(buyerClient);
     }
 
+    // Display the list of existing products and enables user to buy them
     public void buyerOption1(BuyerClientInterface buyerClient) throws RemoteException {
 
         buyerClient.printOnClient("---- Buying from Store ----");
@@ -422,6 +441,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         FileUtils.saveSalesHistory(sellingService.getSellHistory());
     }
 
+    // Display the list of existing products (same as managerOption4())
     public void buyerOption2(BuyerClientInterface buyerClient) throws RemoteException {
         buyerClient.printOnClient(
                 "----- Choose a filter -----\n" +
@@ -461,6 +481,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         }
     }
 
+    // Display the list of items bought by the client
     public void buyerOption3(BuyerClientInterface buyerClient) throws RemoteException {
         try {
             if (sellingService.getSellHistory().isEmpty()) {
@@ -477,6 +498,7 @@ public class Server extends UnicastRemoteObject implements ServerInterface {
         }
     }
 
+    // Enables both connection localhost and by others PCs in the same network
     public static void main(String[] args) throws UnknownHostException {
         String s;
         System.setSecurityManager(new SecurityManager());

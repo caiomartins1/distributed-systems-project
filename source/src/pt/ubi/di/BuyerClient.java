@@ -14,35 +14,43 @@ import java.rmi.server.UnicastRemoteObject;
 public class BuyerClient extends UnicastRemoteObject implements BuyerClientInterface {
     private String id;
 
+    // Initialized the buyer client id
     public BuyerClient() throws RemoteException {
         super();
         this.id = "Junior";
     }
 
+    // Enables server to print messages to the user
     public void printOnClient(String s) throws RemoteException {
         System.out.println(s);
     }
 
+    // Enables server to read strings from client
     public String readStringClient() throws RemoteException {
         return ReadUtils.readString();
     }
 
+    // Enables server to read int from client
     public int readIntClient() throws RemoteException {
         return ReadUtils.readInt();
     }
 
+    // Enables server to print messages to the user (no new line for formatting purposes)
     public void printOnClientNoNL(String s) throws RemoteException {
         System.out.print(s);
     }
 
+    // Enables server to read chat from client
     public char readCharClient() throws RemoteException {
         return ReadUtils.readChar();
     }
 
+    // Enables server to get the client id
     public String getClientId() throws RemoteException {
         return this.id;
     }
 
+    // Enables both localhost and connection from others PCs in the same network
     public static void main(String[] args) {
 
         System.setSecurityManager(new SecurityManager());
@@ -71,7 +79,7 @@ public class BuyerClient extends UnicastRemoteObject implements BuyerClientInter
                                 "----- Choose an action: -----\n" +
                                 "1. Buy a product\n" +
                                 "2. List existing parts\n" +
-                                "3. List sells\n" + // DOING (vitor)
+                                "3. List sells\n" +
                                 "0. Exit\n" +
                                 "Your action:"
                 );
