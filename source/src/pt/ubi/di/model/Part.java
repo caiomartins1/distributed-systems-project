@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * Part -> it represents a type of part, with buy/sell price, minStock and a list of the items in stock
+ */
 public class Part implements Serializable {
 
     String id;

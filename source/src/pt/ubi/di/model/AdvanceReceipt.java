@@ -8,8 +8,9 @@ import java.util.UUID;
 
 /**
  * A receipt with many receipts within itself
+ * Serves the purpose of registering a purchase of multiple items of different/multiple parts
  * it as a unique id
- * it as a id for its "buyer" and its buyer
+ * it as a id for its "buyer"
  * it as a list of receipts per part
  * it as a totalCost
  * it as a timeOfPurchase
@@ -23,6 +24,13 @@ public class AdvanceReceipt implements Serializable {
     float totalCost;
     LocalDateTime timeOfPurchase;
 
+    /**
+     * Constructor for an Advance Receipt
+     * You would keep this in a list, they can be use either for buying or selling
+     * @param advanceSlip
+     * @param whoFor
+     * @param name
+     */
     public AdvanceReceipt(ArrayList<Receipt> advanceSlip, String whoFor, String name) {
         this.advanceSlip = new ArrayList<>();
         this.advanceSlip = (ArrayList<Receipt>) advanceSlip.clone();

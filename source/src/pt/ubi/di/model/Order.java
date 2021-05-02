@@ -2,6 +2,10 @@ package pt.ubi.di.model;
 
 import java.util.ArrayList;
 
+/** Registers the part and quantity desired to buy
+ * Keep it in a list to form a "buy/sell order" meaning having
+ * a list of all the parts and quantities desired
+ */
 public class Order {
 
     Part part;

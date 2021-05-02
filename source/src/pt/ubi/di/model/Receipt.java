@@ -3,6 +3,11 @@ package pt.ubi.di.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * A receipt for buying (specified quantity) from a single part
+ * Not to be used by itself only to be used by advance receipt
+ * Serves the purpose of registering the purchase/sale of a quantity of items for a single part
+ */
 public class Receipt implements Serializable {
 
     String id;
